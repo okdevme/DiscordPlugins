@@ -1,14 +1,13 @@
 /**
  * @name InMyVoice
  * @author arg0NNY
- * @authorLink https://github.com/arg0NNY/DiscordPlugins
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://donationalerts.com/r/arg0nny
- * @version 1.2.3
+ * @version 1.2.4
  * @description Shows if a person in the text chat is also in a voice chat you're in.
- * @website https://github.com/arg0NNY/DiscordPlugins/tree/master/InMyVoice
- * @source https://github.com/arg0NNY/DiscordPlugins/blob/master/InMyVoice/InMyVoice.plugin.js
- * @updateUrl https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/InMyVoice/InMyVoice.plugin.js
+ * @website https://github.com/okdevme/DiscordPlugins/tree/master/InMyVoice
+ * @source https://github.com/okdevme/DiscordPlugins/blob/master/InMyVoice/InMyVoice.plugin.js
  * @runAt idle
  */
 
@@ -16,7 +15,7 @@
 const config = {
   info: {
     name: 'InMyVoice',
-    version: '1.2.3',
+    version: '1.2.4',
     description: 'Shows if a person in the text chat is also in a voice chat you\'re in.'
   },
   changelog: [
@@ -24,7 +23,7 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated to work in the latest release of Discord.'
+        'Updated author GitHub username.'
       ]
     }
   ]

@@ -1,6 +1,6 @@
 ![BetterGuildTooltip](https://user-images.githubusercontent.com/52377180/196028848-18d5e46a-dbc6-49d2-8604-c3a2e03a09cd.png)
 
-# [BetterGuildTooltip](https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterGuildTooltip) ![Status][status-official-badge] ![Version][betterguildtooltip-version-badge] ![Downloads][betterguildtooltip-downloads-badge] ![Likes][betterguildtooltip-likes-badge]
+# [BetterGuildTooltip](https://github.com/okdevme/DiscordPlugins/tree/master/BetterGuildTooltip) ![Status][status-official-badge] ![Version][betterguildtooltip-version-badge] ![Downloads][betterguildtooltip-downloads-badge] ![Likes][betterguildtooltip-likes-badge]
 Displays an online and total member count in the guild tooltip.
 
 [![Download][download-badge]][betterguildtooltip-download-link] [![View][view-badge]][betterguildtooltip-view-link] [![Support][support-badge]][support-link]
@@ -16,8 +16,8 @@ Displays an online and total member count in the guild tooltip.
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[betterguildtooltip-download-link]: https://arg0nny.github.io/bd/download/?id=BetterGuildTooltip
+[betterguildtooltip-download-link]: https://okdevme.github.io/bd/download/?id=BetterGuildTooltip
 [betterguildtooltip-view-link]: https://betterdiscord.app/plugin/BetterGuildTooltip
-[betterguildtooltip-version-badge]: https://img.shields.io/badge/version-1.2.4-blue
+[betterguildtooltip-version-badge]: https://img.shields.io/badge/version-1.2.5-blue
 [betterguildtooltip-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterGuildTooltip
 [betterguildtooltip-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterGuildTooltip

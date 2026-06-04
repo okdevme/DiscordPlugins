@@ -1,14 +1,13 @@
 /**
  * @name BetterChannelList
  * @author arg0NNY
- * @authorLink https://github.com/arg0NNY/DiscordPlugins
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://donationalerts.com/r/arg0nny
- * @version 1.2.16
+ * @version 1.2.17
  * @description 2 in 1: Shows the most recent message for each channel and brings channel list redesign from the new mobile UI.
- * @website https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterChannelList
- * @source https://github.com/arg0NNY/DiscordPlugins/blob/master/BetterChannelList/BetterChannelList.plugin.js
- * @updateUrl https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/BetterChannelList/BetterChannelList.plugin.js
+ * @website https://github.com/okdevme/DiscordPlugins/tree/master/BetterChannelList
+ * @source https://github.com/okdevme/DiscordPlugins/blob/master/BetterChannelList/BetterChannelList.plugin.js
  * @runAt idle
  */
 
@@ -16,7 +15,7 @@
 const config = {
   info: {
     name: 'BetterChannelList',
-    version: '1.2.16',
+    version: '1.2.17',
     description: '2 in 1: Shows the most recent message for each channel and brings channel list redesign from the new mobile UI.'
   },
   changelog: [
@@ -24,8 +23,7 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated to work in the latest release of Discord.',
-        'Fixed the reactions disappearing for last messages in channels.'
+        'Updated author GitHub username.'
       ]
     }
   ]

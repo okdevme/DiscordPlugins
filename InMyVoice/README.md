@@ -1,4 +1,4 @@
-# [InMyVoice](https://github.com/arg0NNY/DiscordPlugins/tree/master/InMyVoice) ![Status][status-official-badge] ![Version][inmyvoice-version-badge] ![Downloads][inmyvoice-downloads-badge] ![Likes][inmyvoice-likes-badge]
+# [InMyVoice](https://github.com/okdevme/DiscordPlugins/tree/master/InMyVoice) ![Status][status-official-badge] ![Version][inmyvoice-version-badge] ![Downloads][inmyvoice-downloads-badge] ![Likes][inmyvoice-likes-badge]
 Shows if a person in the text chat is also in a voice chat that you're in.
 
 ![InMyVoice](https://user-images.githubusercontent.com/52377180/151669091-9e0082e9-badd-466c-a909-bcf3cbc1bdf3.png)
@@ -17,8 +17,8 @@ Shows if a person in the text chat is also in a voice chat that you're in.
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[inmyvoice-download-link]: https://arg0nny.github.io/bd/download/?id=InMyVoice
+[inmyvoice-download-link]: https://okdevme.github.io/bd/download/?id=InMyVoice
 [inmyvoice-view-link]: https://betterdiscord.app/plugin/InMyVoice
-[inmyvoice-version-badge]: https://img.shields.io/badge/version-1.2.3-blue
+[inmyvoice-version-badge]: https://img.shields.io/badge/version-1.2.4-blue
 [inmyvoice-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/InMyVoice
 [inmyvoice-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/InMyVoice

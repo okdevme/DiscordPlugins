@@ -1,6 +1,6 @@
 ![PasscodeLock](https://user-images.githubusercontent.com/52377180/162033207-118f11ff-27f5-4aca-9a27-584b94c0bc07.gif)
 
-# [PasscodeLock](https://github.com/arg0NNY/DiscordPlugins/tree/master/PasscodeLock) ![Status][status-official-badge] ![Version][passcodelock-version-badge] ![Downloads][passcodelock-downloads-badge] ![Likes][passcodelock-likes-badge]
+# [PasscodeLock](https://github.com/okdevme/DiscordPlugins/tree/master/PasscodeLock) ![Status][status-official-badge] ![Version][passcodelock-version-badge] ![Downloads][passcodelock-downloads-badge] ![Likes][passcodelock-likes-badge]
 Protect your Discord with a passcode.
 
 > This plugin **DOES** prevent people who are casually snooping, **BUT** if anyone has access to the computer with Discord logged in and is actually determined to get access to it, **there's nothing PasscodeLock can do** within the scope of a BD plugin to prevent them.
@@ -19,8 +19,8 @@ The real solution from a security perspective is just... lock or log out of your
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[passcodelock-download-link]: https://arg0nny.github.io/bd/download/?id=PasscodeLock
+[passcodelock-download-link]: https://okdevme.github.io/bd/download/?id=PasscodeLock
 [passcodelock-view-link]: https://betterdiscord.app/plugin/PasscodeLock
-[passcodelock-version-badge]: https://img.shields.io/badge/version-1.5.10-blue
+[passcodelock-version-badge]: https://img.shields.io/badge/version-1.5.11-blue
 [passcodelock-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/PasscodeLock
 [passcodelock-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/PasscodeLock

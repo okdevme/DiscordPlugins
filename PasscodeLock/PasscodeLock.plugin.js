@@ -1,21 +1,20 @@
 /**
  * @name PasscodeLock
  * @author arg0NNY
- * @authorLink https://github.com/arg0NNY/DiscordPlugins
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://donationalerts.com/r/arg0nny
- * @version 1.5.10
+ * @version 1.5.11
  * @description Protect your Discord with a passcode.
- * @website https://github.com/arg0NNY/DiscordPlugins/tree/master/PasscodeLock
- * @source https://github.com/arg0NNY/DiscordPlugins/blob/master/PasscodeLock/PasscodeLock.plugin.js
- * @updateUrl https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/PasscodeLock/PasscodeLock.plugin.js
+ * @website https://github.com/okdevme/DiscordPlugins/tree/master/PasscodeLock
+ * @source https://github.com/okdevme/DiscordPlugins/blob/master/PasscodeLock/PasscodeLock.plugin.js
  */
 
 /* ### CONFIG START ### */
 const config = {
   info: {
     name: 'PasscodeLock',
-    version: '1.5.10',
+    version: '1.5.11',
     description: 'Protect your Discord with a passcode.'
   },
   changelog: [
@@ -23,7 +22,7 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated to work in the latest release of Discord.',
+        'Updated author GitHub username.',
       ]
     }
   ]

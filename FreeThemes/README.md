@@ -1,6 +1,6 @@
 ![FreeThemes](https://user-images.githubusercontent.com/52377180/225885754-cd6841cc-1fb4-4f7e-af63-eefc76ca85f0.png)
 
-# [FreeThemes](https://github.com/arg0NNY/DiscordPlugins/tree/master/FreeThemes) ![Status][status-discontinued-badge] ![Version][freethemes-version-badge]
+# [FreeThemes](https://github.com/okdevme/DiscordPlugins/tree/master/FreeThemes) ![Status][status-discontinued-badge] ![Version][freethemes-version-badge]
 Use Discord's Colour Themes without Nitro!
 
 [![Download][download-badge]][freethemes-download-link] ![View][unavailable-badge]
@@ -17,5 +17,5 @@ Use Discord's Colour Themes without Nitro!
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[freethemes-download-link]: https://arg0nny.github.io/bd/download/?id=FreeThemes
+[freethemes-download-link]: https://okdevme.github.io/bd/download/?id=FreeThemes
 [freethemes-version-badge]: https://img.shields.io/badge/version-1.1.0-blue

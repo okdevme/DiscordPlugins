@@ -1,13 +1,13 @@
 /**
  * @name BetterGuildTooltip
  * @author arg0NNY
- * @authorId 633223783204782090
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
- * @version 1.2.4
+ * @donate https://donationalerts.com/r/arg0nny
+ * @version 1.2.5
  * @description Displays an online and total member count in the guild tooltip.
- * @website https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterGuildTooltip
- * @source https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/BetterGuildTooltip/BetterGuildTooltip.plugin.js
- * @updateUrl https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/BetterGuildTooltip/BetterGuildTooltip.plugin.js
+ * @website https://github.com/okdevme/DiscordPlugins/tree/master/BetterGuildTooltip
+ * @source https://raw.githubusercontent.com/okdevme/DiscordPlugins/master/BetterGuildTooltip/BetterGuildTooltip.plugin.js
  * @runAt idle
  */
 
@@ -15,7 +15,7 @@
 const config = {
   info: {
     name: 'BetterGuildTooltip',
-    version: '1.2.4',
+    version: '1.2.5',
     description: 'Displays an online and total member count in the guild tooltip.'
   },
   changelog: [
@@ -23,7 +23,7 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated to work in the latest release of Discord.'
+        'Updated author GitHub username.'
       ]
     }
   ]

@@ -7,37 +7,37 @@
  
 ```
 
-## [BetterAnimations](https://github.com/arg0NNY/BetterAnimations) ![Status][status-official-badge] ![Version][betteranimations-version-badge] ![Downloads][betteranimations-downloads-badge] ![Likes][betteranimations-likes-badge]
+## [BetterAnimations](https://github.com/okdevme/BetterAnimations) ![Status][status-official-badge] ![Version][betteranimations-version-badge] ![Downloads][betteranimations-downloads-badge] ![Likes][betteranimations-likes-badge]
 🌊 Discord Animations Client Mod & Framework
 
 [![Download][download-badge]][betteranimations-download-link] [![View][view-badge]][betteranimations-view-link]
 
 
-## [BetterChannelList](https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterChannelList) ![Status][status-official-badge] ![Version][betterchannellist-version-badge] ![Downloads][betterchannellist-downloads-badge] ![Likes][betterchannellist-likes-badge]
+## [BetterChannelList](https://github.com/okdevme/DiscordPlugins/tree/master/BetterChannelList) ![Status][status-official-badge] ![Version][betterchannellist-version-badge] ![Downloads][betterchannellist-downloads-badge] ![Likes][betterchannellist-likes-badge]
 2 in 1: Shows the most recent message for each channel and brings channel list redesign from the new mobile UI.
 
 [![Download][download-badge]][betterchannellist-download-link] [![View][view-badge]][betterchannellist-view-link]
 
 
-## [PasscodeLock](https://github.com/arg0NNY/DiscordPlugins/tree/master/PasscodeLock) ![Status][status-official-badge] ![Version][passcodelock-version-badge] ![Downloads][passcodelock-downloads-badge] ![Likes][passcodelock-likes-badge]
+## [PasscodeLock](https://github.com/okdevme/DiscordPlugins/tree/master/PasscodeLock) ![Status][status-official-badge] ![Version][passcodelock-version-badge] ![Downloads][passcodelock-downloads-badge] ![Likes][passcodelock-likes-badge]
 Protect your Discord with a passcode.
 
 [![Download][download-badge]][passcodelock-download-link] [![View][view-badge]][passcodelock-view-link]
 
 
-## [ChannelsPreview](https://github.com/arg0NNY/DiscordPlugins/tree/master/ChannelsPreview) ![Status][status-official-badge] ![Version][channelspreview-version-badge] ![Downloads][channelspreview-downloads-badge] ![Likes][channelspreview-likes-badge]
+## [ChannelsPreview](https://github.com/okdevme/DiscordPlugins/tree/master/ChannelsPreview) ![Status][status-official-badge] ![Version][channelspreview-version-badge] ![Downloads][channelspreview-downloads-badge] ![Likes][channelspreview-likes-badge]
 V2 is out! Allows you to view recent messages in channels without switching to them.
 
 [![Download][download-badge]][channelspreview-download-link] [![View][view-badge]][channelspreview-view-link]
 
 
-## [BetterGuildTooltip](https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterGuildTooltip) ![Status][status-official-badge] ![Version][betterguildtooltip-version-badge] ![Downloads][betterguildtooltip-downloads-badge] ![Likes][betterguildtooltip-likes-badge]
+## [BetterGuildTooltip](https://github.com/okdevme/DiscordPlugins/tree/master/BetterGuildTooltip) ![Status][status-official-badge] ![Version][betterguildtooltip-version-badge] ![Downloads][betterguildtooltip-downloads-badge] ![Likes][betterguildtooltip-likes-badge]
 Displays an online and total member count in the guild tooltip.
 
 [![Download][download-badge]][betterguildtooltip-download-link] [![View][view-badge]][betterguildtooltip-view-link]
 
 
-## [InMyVoice](https://github.com/arg0NNY/DiscordPlugins/tree/master/InMyVoice) ![Status][status-official-badge] ![Version][inmyvoice-version-badge] ![Downloads][inmyvoice-downloads-badge] ![Likes][inmyvoice-likes-badge]
+## [InMyVoice](https://github.com/okdevme/DiscordPlugins/tree/master/InMyVoice) ![Status][status-official-badge] ![Version][inmyvoice-version-badge] ![Downloads][inmyvoice-downloads-badge] ![Likes][inmyvoice-likes-badge]
 Shows if a person in the text chat is also in a voice chat that you're in.
 
 [![Download][download-badge]][inmyvoice-download-link] [![View][view-badge]][inmyvoice-view-link]
@@ -54,7 +54,7 @@ Shows if a person in the text chat is also in a voice chat that you're in.
 ```
 MIT License
 
-Copyright (c) 2022 arg0NNY
+Copyright (c) 2026 okdevme
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -90,38 +90,38 @@ SOFTWARE.
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[passcodelock-download-link]: https://arg0nny.github.io/bd/download/?id=PasscodeLock
+[passcodelock-download-link]: https://okdevme.github.io/bd/download/?id=PasscodeLock
 [passcodelock-view-link]: https://betterdiscord.app/plugin/PasscodeLock
-[passcodelock-version-badge]: https://img.shields.io/badge/version-1.5.10-blue
+[passcodelock-version-badge]: https://img.shields.io/badge/version-1.5.11-blue
 [passcodelock-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/PasscodeLock
 [passcodelock-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/PasscodeLock
 
-[betteranimations-download-link]: https://arg0nny.github.io/bd/download/?id=BetterAnimations
+[betteranimations-download-link]: https://okdevme.github.io/bd/download/?id=BetterAnimations
 [betteranimations-view-link]: https://betterdiscord.app/plugin/BetterAnimations
 [betteranimations-version-badge]: https://img.shields.io/badge/version-2.1.13-blue
 [betteranimations-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterAnimations
 [betteranimations-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterAnimations
 
-[inmyvoice-download-link]: https://arg0nny.github.io/bd/download/?id=InMyVoice
+[inmyvoice-download-link]: https://okdevme.github.io/bd/download/?id=InMyVoice
 [inmyvoice-view-link]: https://betterdiscord.app/plugin/InMyVoice
-[inmyvoice-version-badge]: https://img.shields.io/badge/version-1.2.3-blue
+[inmyvoice-version-badge]: https://img.shields.io/badge/version-1.2.4-blue
 [inmyvoice-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/InMyVoice
 [inmyvoice-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/InMyVoice
 
-[channelspreview-download-link]: https://arg0nny.github.io/bd/download/?id=ChannelsPreview
+[channelspreview-download-link]: https://okdevme.github.io/bd/download/?id=ChannelsPreview
 [channelspreview-view-link]: https://betterdiscord.app/plugin/ChannelsPreview
-[channelspreview-version-badge]: https://img.shields.io/badge/version-2.1.15-blue
+[channelspreview-version-badge]: https://img.shields.io/badge/version-2.1.16-blue
 [channelspreview-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/ChannelsPreview
 [channelspreview-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/ChannelsPreview
 
-[betterguildtooltip-download-link]: https://arg0nny.github.io/bd/download/?id=BetterGuildTooltip
+[betterguildtooltip-download-link]: https://okdevme.github.io/bd/download/?id=BetterGuildTooltip
 [betterguildtooltip-view-link]: https://betterdiscord.app/plugin/BetterGuildTooltip
-[betterguildtooltip-version-badge]: https://img.shields.io/badge/version-1.2.4-blue
+[betterguildtooltip-version-badge]: https://img.shields.io/badge/version-1.2.5-blue
 [betterguildtooltip-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterGuildTooltip
 [betterguildtooltip-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterGuildTooltip
 
-[betterchannellist-download-link]: https://arg0nny.github.io/bd/download/?id=BetterChannelList
+[betterchannellist-download-link]: https://okdevme.github.io/bd/download/?id=BetterChannelList
 [betterchannellist-view-link]: https://betterdiscord.app/plugin/BetterChannelList
-[betterchannellist-version-badge]: https://img.shields.io/badge/version-1.2.16-blue
+[betterchannellist-version-badge]: https://img.shields.io/badge/version-1.2.17-blue
 [betterchannellist-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterChannelList
 [betterchannellist-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterChannelList

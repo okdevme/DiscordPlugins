@@ -1,6 +1,6 @@
-![BetterAnimations](https://raw.githubusercontent.com/arg0NNY/BetterAnimations/refs/heads/main/assets/cover.webp)
+![BetterAnimations](https://raw.githubusercontent.com/okdevme/BetterAnimations/refs/heads/main/assets/cover.webp)
 
-# [BetterAnimations](https://github.com/arg0NNY/BetterAnimations) ![Status][status-official-badge] ![Version][betteranimations-version-badge] ![Downloads][betteranimations-downloads-badge] ![Likes][betteranimations-likes-badge]
+# [BetterAnimations](https://github.com/okdevme/BetterAnimations) ![Status][status-official-badge] ![Version][betteranimations-version-badge] ![Downloads][betteranimations-downloads-badge] ![Likes][betteranimations-likes-badge]
 🌊 Discord Animations Client Mod & Framework
 
 [![Download][download-badge]][betteranimations-download-link] [![View][view-badge]][betteranimations-view-link] [![Support][support-badge]][support-link]
@@ -16,7 +16,7 @@
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[betteranimations-download-link]: https://arg0nny.github.io/bd/download/?id=BetterAnimations
+[betteranimations-download-link]: https://okdevme.github.io/bd/download/?id=BetterAnimations
 [betteranimations-view-link]: https://betterdiscord.app/plugin/BetterAnimations
 [betteranimations-version-badge]: https://img.shields.io/badge/version-2.1.13-blue
 [betteranimations-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterAnimations

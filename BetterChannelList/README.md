@@ -1,6 +1,6 @@
-![BetterChannelList](https://github.com/arg0NNY/DiscordPlugins/assets/52377180/e9076604-e50e-4ae6-ae8e-e1f59e4bdaca)
+![BetterChannelList](https://github.com/okdevme/DiscordPlugins/assets/52377180/e9076604-e50e-4ae6-ae8e-e1f59e4bdaca)
 
-# [BetterChannelList](https://github.com/arg0NNY/DiscordPlugins/tree/master/BetterChannelList) ![Status][status-official-badge] ![Version][betterchannellist-version-badge] ![Downloads][betterchannellist-downloads-badge] ![Likes][betterchannellist-likes-badge]
+# [BetterChannelList](https://github.com/okdevme/DiscordPlugins/tree/master/BetterChannelList) ![Status][status-official-badge] ![Version][betterchannellist-version-badge] ![Downloads][betterchannellist-downloads-badge] ![Likes][betterchannellist-likes-badge]
 2 in 1: Shows the most recent message for each channel and brings channel list redesign from the new mobile UI.
 
 [![Download][download-badge]][betterchannellist-download-link] [![View][view-badge]][betterchannellist-view-link] [![Support][support-badge]][support-link]
@@ -16,8 +16,8 @@
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[betterchannellist-download-link]: https://arg0nny.github.io/bd/download/?id=BetterChannelList
+[betterchannellist-download-link]: https://okdevme.github.io/bd/download/?id=BetterChannelList
 [betterchannellist-view-link]: https://betterdiscord.app/plugin/BetterChannelList
-[betterchannellist-version-badge]: https://img.shields.io/badge/version-1.2.16-blue
+[betterchannellist-version-badge]: https://img.shields.io/badge/version-1.2.17-blue
 [betterchannellist-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterChannelList
 [betterchannellist-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterChannelList

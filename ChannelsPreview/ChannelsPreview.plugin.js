@@ -1,14 +1,13 @@
 /**
  * @name ChannelsPreview
  * @author arg0NNY
- * @authorLink https://github.com/arg0NNY/DiscordPlugins
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://donationalerts.com/r/arg0nny
- * @version 2.1.15
+ * @version 2.1.16
  * @description Allows you to view recent messages in channels without switching to it.
- * @website https://github.com/arg0NNY/DiscordPlugins/tree/master/ChannelsPreview
- * @source https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/ChannelsPreview/ChannelsPreview.plugin.js
- * @updateUrl https://raw.githubusercontent.com/arg0NNY/DiscordPlugins/master/ChannelsPreview/ChannelsPreview.plugin.js
+ * @website https://github.com/okdevme/DiscordPlugins/tree/master/ChannelsPreview
+ * @source https://raw.githubusercontent.com/okdevme/DiscordPlugins/master/ChannelsPreview/ChannelsPreview.plugin.js
  * @runAt idle
  */
 
@@ -16,7 +15,7 @@
 const config = {
   info: {
     name: 'ChannelsPreview',
-    version: '2.1.15',
+    version: '2.1.16',
     description: 'Allows you to view recent messages in channels without switching to it.'
   },
   changelog: [
@@ -24,7 +23,7 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated to work in the latest release of Discord.'
+        'Updated author GitHub username.'
       ]
     }
   ]

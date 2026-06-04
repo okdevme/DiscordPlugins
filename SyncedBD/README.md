@@ -1,6 +1,6 @@
 ![SyncedBD](https://user-images.githubusercontent.com/52377180/157688075-b1408100-9582-4654-85f4-a36f88118aad.gif)
 
-# [SyncedBD](https://github.com/arg0NNY/DiscordPlugins/tree/master/SyncedBD) ![Status][status-discontinued-badge] ![Version][syncedbd-version-badge]
+# [SyncedBD](https://github.com/okdevme/DiscordPlugins/tree/master/SyncedBD) ![Status][status-discontinued-badge] ![Version][syncedbd-version-badge]
 Syncs your BetterDiscord settings, official themes, and plugins with their configs between BD installations linked to your Discord account. Allows you to automatically import all of your BD configs after a clean installation. Plug-n-play it is!
 
 [![Download][download-badge]][syncedbd-download-link] ![View][unavailable-badge]
@@ -17,5 +17,5 @@ Syncs your BetterDiscord settings, official themes, and plugins with their confi
 [status-review-badge]: https://img.shields.io/badge/status-review-yellow
 [status-official-badge]: https://img.shields.io/badge/status-official-brightgreen
 
-[syncedbd-download-link]: https://arg0nny.github.io/bd/download/?id=SyncedBD
+[syncedbd-download-link]: https://okdevme.github.io/bd/download/?id=SyncedBD
 [syncedbd-version-badge]: https://img.shields.io/badge/version-1.3.0-blue
