@@ -2,20 +2,20 @@
  * @name BetterAnimations
  * @description 🌊 Discord Animations Client Mod & Framework
  * @author arg0NNY
- * @authorLink https://github.com/arg0NNY/DiscordPlugins
+ * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://boosty.to/arg0nny/donate
  * @website https://docs.betteranimations.net
- * @source https://github.com/arg0NNY/BetterAnimations
+ * @source https://github.com/okdevme/BetterAnimations
  * @runAt idle
- * @version 2.1.12
+ * @version 2.1.13
  */
 
 /* ### CONFIG START ### */
 const config = {
   "info": {
     "name": "BetterAnimations",
-    "version": "2.1.12",
+    "version": "2.1.13",
     "description": "🌊 Discord Animations Client Mod & Framework"
   },
   "changelog": [
@@ -23,8 +23,8 @@ const config = {
       "type": "fixed",
       "title": "Fixes",
       "items": [
-        "Updated to work in the latest release of Discord.",
-        "Minor bugfixes."
+        "Updated author GitHub username.",
+        "Polished the Pack Updater and ported it to BD notifications."
       ]
     }
   ]
@@ -74,11 +74,11 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		name: "BetterAnimations",
 		description: "🌊 Discord Animations Client Mod & Framework",
 		author: "arg0NNY",
-		authorLink: "https://github.com/arg0NNY/DiscordPlugins",
+		authorLink: "https://github.com/okdevme/DiscordPlugins",
 		invite: "M8DBtcZjXD",
 		donate: "https://boosty.to/arg0nny/donate",
 		website: "https://docs.betteranimations.net",
-		source: "https://github.com/arg0NNY/BetterAnimations",
+		source: "https://github.com/okdevme/BetterAnimations",
 		runAt: "idle"
 	};
 	var { Patcher: BDPatcher, Webpack, Utils, ReactUtils, DOM, Data: BDData, Plugins, Hooks, UI, Net, ContextMenu: ContextMenu$1, Themes, version: bdVersion } = new BdApi(config_default.name);
@@ -954,7 +954,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	}
 	//#endregion
 	//#region package.json
-	var version$1 = "2.1.12";
+	var version$1 = "2.1.13";
 	//#endregion
 	//#region shared/error/structs/BaseError.js
 	var BaseError = class extends Error {
@@ -983,7 +983,6 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		StandardSidebarView: () => Webpack.getByKeys("standardSidebarView", "contentRegion"),
 		SettingsSidebar: () => Webpack.getByKeys("sidebar", "section", "nav"),
 		Modal: Webpack.getByKeys("root", "rootWithShadow"),
-		ModalBackdrop: Webpack.getByKeys("backdrop", "withLayer"),
 		Layers: Webpack.getByKeys("layer", "baseLayer"),
 		AppMount: Webpack.getByKeys("appMount"),
 		AppView: Webpack.getByKeys("base", "content"),
@@ -20251,22 +20250,38 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		}
 	};
 	//#endregion
-	//#region src/modules/Notices.js
-	var Notices = class {
-		static info(content, options = {}) {
-			return this.show(content, Object.assign({}, options, { type: "info" }));
+	//#region src/modules/Notifications.jsx
+	var Notifications = class {
+		static info(options = {}) {
+			return this.show(Object.assign({}, options, {
+				type: "info",
+				iconType: IconBrand.Types.INFO
+			}));
 		}
-		static warn(content, options = {}) {
-			return this.show(content, Object.assign({}, options, { type: "warning" }));
+		static warn(options = {}) {
+			return this.show(Object.assign({}, options, {
+				type: "warning",
+				iconType: IconBrand.Types.WARNING
+			}));
 		}
-		static error(content, options = {}) {
-			return this.show(content, Object.assign({}, options, { type: "error" }));
+		static error(options = {}) {
+			return this.show(Object.assign({}, options, {
+				type: "error",
+				iconType: IconBrand.Types.ERROR
+			}));
 		}
-		static success(content, options = {}) {
-			return this.show(content, Object.assign({}, options, { type: "success" }));
+		static success(options = {}) {
+			return this.show(Object.assign({}, options, {
+				type: "success",
+				iconType: IconBrand.Types.SUCCESS
+			}));
 		}
-		static show(content, options = {}) {
-			return UI.showNotice(content, options);
+		static show(options = {}) {
+			return UI.showNotification({
+				title: meta_default.name,
+				icon: () => /* @__PURE__ */ BdApi.React.createElement(IconBrand, { type: options.iconType ?? IconBrand.Types.DEFAULT }),
+				...options
+			});
 		}
 	};
 	//#endregion
@@ -29778,9 +29793,8 @@ img.BAP__viewport {
 		const registry = usePackRegistry();
 		const [data] = useData("catalog");
 		(0, react.useEffect)(() => {
-			if (data.visited) return;
+			if (!data.visited) data.visited = true;
 			registry.items.forEach((item) => registry.markAsKnown(item));
-			data.visited = true;
 		}, []);
 		return /* @__PURE__ */ BdApi.React.createElement(PackListView, {
 			title: "Catalog",
@@ -30387,7 +30401,7 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 			return "PackRegistry";
 		}
 		get baseUrl() {
-			return "https://gist.githubusercontent.com/arg0NNY/c0200ac6bc1665a91df8bd3c0eb46749";
+			return "https://gist.githubusercontent.com/okdevme/c0200ac6bc1665a91df8bd3c0eb46749";
 		}
 		get mainFilename() {
 			return "Better-Animations-Pack-Registry.json";
@@ -30411,7 +30425,7 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 			this._error = null;
 			this._items = this.cache?.items ?? [];
 			this._authors = this.cache?.authors ?? [];
-			this._closeNotice = null;
+			this._notification = null;
 			this._schedulerCallbackId = null;
 			this.onPackLoaded = (pack) => {
 				this.verifier.verifyAll([pack]);
@@ -30526,10 +30540,10 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 			}
 		}
 		update(filename, options) {
-			return this.install(filename, "update", options);
+			return this.install(filename, options, "update");
 		}
 		reinstall(filename, options) {
-			return this.install(filename, "reinstall", options);
+			return this.install(filename, options, "reinstall");
 		}
 		delete(filename) {
 			try {
@@ -30557,16 +30571,26 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 		hasOutdatedPacks() {
 			return PackManager_default.getAllPacks(true).some((pack) => this.hasUpdate(pack));
 		}
-		showUpdatesNotice(updatesCount = this.getUpdatesCount()) {
-			this._closeNotice?.();
-			this._closeNotice = Notices.info(`${meta_default.name} has found updates for ${updatesCount} of your packs!`, { buttons: [{
-				label: "View Library",
-				onClick: () => {
-					this._closeNotice?.();
-					data.library.sort = "default";
-					settings_default.openSettingsModal(SettingsSection_default.Library);
-				}
-			}] });
+		showUpdatesNotification(outdatedPacks = this.getOutdatedPacks()) {
+			this._notification?.close();
+			this._notification = Notifications.info({
+				id: "BA__updatesNotification",
+				content: /* @__PURE__ */ BdApi.React.createElement(BdApi.React.Fragment, null, outdatedPacks.length > 1 ? `${outdatedPacks.length} packs have updates!` : "One pack has an update!", /* @__PURE__ */ BdApi.React.createElement("ul", { class: "BA__updatesNotificationList" }, outdatedPacks.map((pack) => {
+					const latest = this.getPack(pack.filename);
+					return /* @__PURE__ */ BdApi.React.createElement("li", null, pack.name, latest && /* @__PURE__ */ BdApi.React.createElement("i", null, " v", latest.version));
+				}))),
+				duration: Infinity,
+				actions: [{
+					label: "Update All",
+					onClick: () => this.updateAll()
+				}, {
+					label: "View Library",
+					onClick: () => {
+						data.library.sort = "default";
+						settings_default.openSettingsModal(SettingsSection_default.Library);
+					}
+				}]
+			});
 		}
 		async checkForUpdates(options = {}) {
 			const { useToasts = false, updateRegistry = true } = options;
@@ -30577,7 +30601,8 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 					return;
 				}
 			}
-			const updatesCount = this.getOutdatedPacks().length;
+			const outdatedPacks = this.getOutdatedPacks();
+			const updatesCount = outdatedPacks.length;
 			if (!updatesCount) {
 				Logger.info(this.name, "No updates found.");
 				if (useToasts) Toasts.success("Everything is up to date!");
@@ -30585,7 +30610,7 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 			}
 			Logger.info(this.name, `Found ${updatesCount} updates.`);
 			if (useToasts) return Toasts.show(`Found updates for ${updatesCount} of your packs!`);
-			this.showUpdatesNotice(updatesCount);
+			this.showUpdatesNotification(outdatedPacks);
 		}
 		scheduleCheckForUpdates(options) {
 			cancelIdleCallback(this._schedulerCallbackId);
@@ -30597,7 +30622,7 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 			Logger.info(this.name, `Updated ${packs.length} packs.`);
 			if (results.every(Boolean)) {
 				Toasts.success("Everything is up to date!");
-				this._closeNotice?.();
+				this._notification?.close();
 			}
 		}
 		getThumbnailSrc(pack) {
@@ -30630,9 +30655,13 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 		shutdown() {
 			this.unlistenPackEvents();
 			this.storage.clear();
+			this._notification?.close();
 			Logger.info(this.name, "Shutdown.");
 		}
 	}();
+	css`.BA__updatesNotificationList {
+    margin-top: 8px;
+}``PackRegistry`;
 	//#endregion
 	//#region src/modules/PackManager.js
 	var PackManager_default = new class PackManager extends AddonManager {
@@ -31226,13 +31255,10 @@ ${DiscordSelectors.StandardSidebarView.contentColumnDefault}:has(> .BA__moduleSe
 		}
 		showToast() {
 			if (this.usingNotifications) {
-				this.notification = UI.showNotification({
+				this.notification = Notifications.error({
 					id: ERROR_MANAGER_NOTIFICATION_ID,
-					type: "error",
-					title: meta_default.name,
-					icon: () => /* @__PURE__ */ BdApi.React.createElement(IconBrand, { type: IconBrand.Types.ERROR }),
 					content: /* @__PURE__ */ BdApi.React.createElement(ErrorToastText, null),
-					duration: this.timeoutDuration,
+					duration: Infinity,
 					actions: [{
 						label: "View",
 						onClick: this.onView.bind(this)
@@ -33676,7 +33702,7 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 	//#region changelog.json
 	var changelog_default = {
 		"2.0.0": {
-			"banner": "https://github.com/arg0NNY/BetterAnimations/raw/refs/heads/main/assets/V2.webp",
+			"banner": "https://github.com/okdevme/BetterAnimations/raw/refs/heads/main/assets/V2.webp",
 			"blurb": "Larger, faster, and rebuilt from the ground up. **BetterAnimations 2.0** is here, transforming your Discord experience with a new generation of silky-smooth, deeply integrated animations.",
 			"changes": [{
 				"type": "added",
@@ -33830,6 +33856,11 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			"type": "fixed",
 			"title": "Fixes",
 			"items": ["Updated to work in the latest release of Discord.", "Minor bugfixes."]
+		}] },
+		"2.1.13": { "changes": [{
+			"type": "fixed",
+			"title": "Fixes",
+			"items": ["Updated author GitHub username.", "Polished the Pack Updater and ported it to BD notifications."]
 		}] }
 	};
 	//#endregion
@@ -33910,7 +33941,7 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			if (a && b && a.major !== b.major && [b.minor, b.patch].some((i) => i !== "0")) this.showPluginModal(`${b.major}.0.0`);
 		}
 		showPluginModalIfNeeded() {
-			if (this.data.version === "2.1.12" && this.data.hasShownChangelog) return;
+			if (this.data.version === "2.1.13" && this.data.hasShownChangelog) return;
 			this.showPluginModal(version$1);
 			this.showPluginMajorModalIfNeeded();
 			this.data = {
