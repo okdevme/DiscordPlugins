@@ -18,6 +18,6 @@
 
 [betterchannellist-download-link]: https://okdevme.github.io/bd/download/?id=BetterChannelList
 [betterchannellist-view-link]: https://betterdiscord.app/plugin/BetterChannelList
-[betterchannellist-version-badge]: https://img.shields.io/badge/version-1.2.17-blue
+[betterchannellist-version-badge]: https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fokdevme%2FDiscordPlugins%2Frefs%2Fheads%2Fmaster%2FBetterChannelList%2FBetterChannelList.plugin.js&search=%40version%20(.%2B)&replace=%241&label=version&color=blue
 [betterchannellist-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterChannelList
 [betterchannellist-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterChannelList

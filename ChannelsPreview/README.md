@@ -18,6 +18,6 @@ Allows you to view recent messages in channels without switching to them.
 
 [channelspreview-download-link]: https://okdevme.github.io/bd/download/?id=ChannelsPreview
 [channelspreview-view-link]: https://betterdiscord.app/plugin/ChannelsPreview
-[channelspreview-version-badge]: https://img.shields.io/badge/version-2.1.16-blue
+[channelspreview-version-badge]: https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fokdevme%2FDiscordPlugins%2Frefs%2Fheads%2Fmaster%2FChannelsPreview%2FChannelsPreview.plugin.js&search=%40version%20(.%2B)&replace=%241&label=version&color=blue
 [channelspreview-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/ChannelsPreview
 [channelspreview-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/ChannelsPreview

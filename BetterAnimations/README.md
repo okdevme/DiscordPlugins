@@ -18,6 +18,6 @@
 
 [betteranimations-download-link]: https://okdevme.github.io/bd/download/?id=BetterAnimations
 [betteranimations-view-link]: https://betterdiscord.app/plugin/BetterAnimations
-[betteranimations-version-badge]: https://img.shields.io/badge/version-2.1.13-blue
+[betteranimations-version-badge]: https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fokdevme%2FDiscordPlugins%2Frefs%2Fheads%2Fmaster%2FBetterAnimations%2FBetterAnimations.plugin.js&search=%40version%20(.%2B)&replace=%241&label=version&color=blue
 [betteranimations-downloads-badge]: https://img.shields.io/badge/dynamic/json?color=brightgreen&label=downloads&query=downloads&url=https://api.betterdiscord.app/v3/store/BetterAnimations
 [betteranimations-likes-badge]: https://img.shields.io/badge/dynamic/json?color=green&label=likes&query=likes&url=https://api.betterdiscord.app/v3/store/BetterAnimations
