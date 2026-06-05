@@ -26,7 +26,7 @@ Protect your Discord with a passcode.
 
 
 ## [ChannelsPreview](https://github.com/okdevme/DiscordPlugins/tree/master/ChannelsPreview) ![Status][status-official-badge] ![Version][channelspreview-version-badge] ![Downloads][channelspreview-downloads-badge] ![Likes][channelspreview-likes-badge]
-V2 is out! Allows you to view recent messages in channels without switching to them.
+Allows you to view recent messages in channels without switching to them.
 
 [![Download][download-badge]][channelspreview-download-link] [![View][view-badge]][channelspreview-view-link]
 
