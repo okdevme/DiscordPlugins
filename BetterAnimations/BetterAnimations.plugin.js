@@ -8,14 +8,14 @@
  * @website https://docs.betteranimations.net
  * @source https://github.com/okdevme/BetterAnimations
  * @runAt idle
- * @version 2.1.13
+ * @version 2.1.14
  */
 
 /* ### CONFIG START ### */
 const config = {
   "info": {
     "name": "BetterAnimations",
-    "version": "2.1.13",
+    "version": "2.1.14",
     "description": "🌊 Discord Animations Client Mod & Framework"
   },
   "changelog": [
@@ -23,8 +23,7 @@ const config = {
       "type": "fixed",
       "title": "Fixes",
       "items": [
-        "Updated author GitHub username.",
-        "Polished the Pack Updater and ported it to BD notifications."
+        "Modals: Updated to work in the latest release of Discord."
       ]
     }
   ]
@@ -579,7 +578,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 			useFocusLock: Filters.byStrings("disableReturnRef"),
 			FocusLock: Filters.byStrings("children", "containerRef")
 		}
-	}, { filter: Filters.bySource("MODAL", "padding-size-") }, { filter: Filters.bySource("popoverGradientWrapper", "spacing") }, {
+	}, { filter: Filters.bySource("transitionState", "padding-size-") }, { filter: Filters.bySource("popoverGradientWrapper", "spacing") }, {
 		filter: Filters.bySource("sortedThreadIds", "\"group\""),
 		declarationFilter: (m) => Filters.byStrings("sortedThreadIds", "\"group\"")(m?.type)
 	}, {
@@ -620,7 +619,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	var useRootElementContextKeyed = keyed(RootElementContextModule, Filters.byStrings("useRootElementContext"));
 	var ListNavigatorContainer = ({ children }) => children(useListContainerProps());
 	var Mana = {
-		ModalRootKeyed: keyed(ManaModalRootModule, Filters.byStrings("MODAL", "padding-size-")),
+		ModalRootKeyed: keyed(ManaModalRootModule, Filters.byStrings("transitionState", "padding-size-")),
 		get ModalRoot() {
 			return unkeyed(this.ModalRootKeyed);
 		},
@@ -954,7 +953,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	}
 	//#endregion
 	//#region package.json
-	var version$1 = "2.1.13";
+	var version$1 = "2.1.14";
 	//#endregion
 	//#region shared/error/structs/BaseError.js
 	var BaseError = class extends Error {
@@ -22959,8 +22958,8 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	}
 	//#endregion
 	//#region shared/utils/transition.js
-	function directChild(node) {
-		return node && [].find.call(node.children, (e) => !e.getAttribute("data-baa"));
+	function directChild(node, last = false) {
+		return node && [][last ? "findLast" : "find"].call(node.children, (e) => !e.getAttribute("data-baa"));
 	}
 	function pass(props = null) {
 		return (e) => (0, react.cloneElement)(e, props);
@@ -23076,7 +23075,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 					data: this.props.data?.[type],
 					type,
 					container,
-					element: directChild(container),
+					element: this.props.element?.(container) ?? directChild(container),
 					viewport: this.props.viewportRef?.current,
 					window,
 					mouse: this.mouse,
@@ -32887,6 +32886,7 @@ ${DiscordSelectors.ManaModal.container} > ${DiscordSelectors.ManaModal.container
 			...props,
 			in: isShown,
 			containerRef,
+			element: (container) => directChild(container, true),
 			enter: !modal.props.instant,
 			exit: !modal.props.instant,
 			mountOnEnter: false,
@@ -33861,6 +33861,11 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			"type": "fixed",
 			"title": "Fixes",
 			"items": ["Updated author GitHub username.", "Polished the Pack Updater and ported it to BD notifications."]
+		}] },
+		"2.1.14": { "changes": [{
+			"type": "fixed",
+			"title": "Fixes",
+			"items": ["Modals: Updated to work in the latest release of Discord."]
 		}] }
 	};
 	//#endregion
@@ -33941,7 +33946,7 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			if (a && b && a.major !== b.major && [b.minor, b.patch].some((i) => i !== "0")) this.showPluginModal(`${b.major}.0.0`);
 		}
 		showPluginModalIfNeeded() {
-			if (this.data.version === "2.1.13" && this.data.hasShownChangelog) return;
+			if (this.data.version === "2.1.14" && this.data.hasShownChangelog) return;
 			this.showPluginModal(version$1);
 			this.showPluginMajorModalIfNeeded();
 			this.data = {
