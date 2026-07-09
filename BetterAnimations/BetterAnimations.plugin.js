@@ -8,14 +8,14 @@
  * @website https://docs.betteranimations.net
  * @source https://github.com/okdevme/BetterAnimations
  * @runAt idle
- * @version 2.1.14
+ * @version 2.1.15
  */
 
 /* ### CONFIG START ### */
 const config = {
   "info": {
     "name": "BetterAnimations",
-    "version": "2.1.14",
+    "version": "2.1.15",
     "description": "🌊 Discord Animations Client Mod & Framework"
   },
   "changelog": [
@@ -23,7 +23,7 @@ const config = {
       "type": "fixed",
       "title": "Fixes",
       "items": [
-        "Modals: Updated to work in the latest release of Discord."
+        "Updated to work in the latest release of Discord."
       ]
     }
   ]
@@ -213,6 +213,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		ExpressionPicker: () => ExpressionPicker,
 		ExpressionPickerStoreModule: () => ExpressionPickerStoreModule,
 		FieldSet: () => FieldSet,
+		Floating: () => Floating$1,
 		Flux: () => Flux,
 		FocusLock: () => FocusLock,
 		FocusLockRawModule: () => FocusLockRawModule,
@@ -339,7 +340,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		useToastStore: () => useToastStore
 	});
 	var { Filters } = Webpack;
-	var [Text$1, Heading, ModalScrimModule, Clickable, Switch$1, SwitchIndicator, { Checkbox, CheckboxTypes }, FieldSet, Breadcrumbs, { RadioGroup }, Slider$1, ReferencePositionLayer, { Badge }, SearchBar, Spinner, Popout, Routes, StaticChannelRoute, BasePopout, SpringTransitionPhases, Button$1, TextButton, ButtonGroup$1, InviteStates, TextInput, AppPanels, GuildActionRow, Message$1, ChannelTextArea, ExpressionPicker, ChannelTextAreaButtons, GuildIcon, Timestamp, getThemeClass, { Transition, CSSTransition, TransitionGroup } = {}, ChannelMessageList, ChannelView, MessageDivider, GuildChannelRouteParams, handleClick, Timeout, GatewaySocket, { Anchor } = {}, Dispatcher, Flux, App, Stack$1, { defaultRules: Parser } = {}, InviteEmbed, InviteActions, { ImpressionNames } = {}, { colors } = {}, humanize, useListNavigator, ThemeStore, ChannelStore, SortedGuildStore, PrivateChannelSortStore, LayerStore$1, InviteStore, SelectedGuildStore, SelectedChannelStore, GuildStore, { useModalsStore, useIsModalAtTop, ...ModalActions }, { Tooltip: Tooltip$1 }, ToastStoreModule, { showToast, useToastStore }, { Toast: Toast$1, createToast }, Router, AppViewRawModule, ContextMenuModule, MenuSubmenuItemRawModule, MenuSubmenuListItemRawModule, PopoutCSSAnimatorRawModule, { AppLayer, appLayerContext }, ModalsModule, LayersRawModule, GuildChannelListModule, ChannelSectionStore, ChatSidebarModule, { SingleSelect } = {}, LayerActions, { Alert, AlertTypes }, UserSettings, { ModalRoot, ModalSize, ModalHeader, ModalFooter, ModalContent }, MenuItemRawModule, ChannelItemRawModule, VoiceChannelItemRawModule, StageVoiceChannelItemRawModule, { AppContext }, ExpressionPickerStoreModule, ProfileEffectsModule, EmojiModule, UseIsVisibleModule, RootElementContextModule, { useListItem, useListContainerProps, ListNavigatorProvider }, FocusLockRawModule, { useFocusLock, FocusLock }, ManaModalRootModule, BasePopoverModule, ChannelThreadList, matchSorter, CopiableField, SidebarActions, SidebarType, ManaTooltipLayer, ManaUseTooltipTransitionModule] = Webpack.getBulk({
+	var [Text$1, Heading, ModalScrimModule, Clickable, Switch$1, SwitchIndicator, { Checkbox, CheckboxTypes }, FieldSet, Breadcrumbs, { RadioGroup }, Slider$1, ReferencePositionLayer, { Badge }, SearchBar, Spinner, Popout, Routes, StaticChannelRoute, BasePopout, SpringTransitionPhases, Button$1, TextButton, ButtonGroup$1, InviteStates, TextInput, AppPanels, GuildActionRow, Message$1, ChannelTextArea, ExpressionPicker, ChannelTextAreaButtons, GuildIcon, Timestamp, getThemeClass, { Transition } = {}, { CSSTransition } = {}, { TransitionGroup } = {}, ChannelMessageList, ChannelView, MessageDivider, GuildChannelRouteParams, handleClick, Timeout, GatewaySocket, { Anchor } = {}, Dispatcher, Flux, App, Stack$1, { defaultRules: Parser } = {}, InviteEmbed, InviteActions, { ImpressionNames } = {}, { colors } = {}, humanize, useListNavigator, ThemeStore, ChannelStore, SortedGuildStore, PrivateChannelSortStore, LayerStore$1, InviteStore, SelectedGuildStore, SelectedChannelStore, GuildStore, { useModalsStore, useIsModalAtTop, ...ModalActions }, { Tooltip: Tooltip$1 }, ToastStoreModule, { showToast, useToastStore }, { Toast: Toast$1, createToast }, Router, AppViewRawModule, ContextMenuModule, MenuSubmenuItemRawModule, MenuSubmenuListItemRawModule, PopoutCSSAnimatorRawModule, { AppLayer, appLayerContext }, ModalsModule, LayersRawModule, GuildChannelListModule, ChannelSectionStore, ChatSidebarModule, { SingleSelect } = {}, LayerActions, { Alert, AlertTypes }, UserSettings, { ModalRoot, ModalSize, ModalHeader, ModalFooter, ModalContent }, MenuItemRawModule, ChannelItemRawModule, VoiceChannelItemRawModule, StageVoiceChannelItemRawModule, { AppContext }, ExpressionPickerStoreModule, ProfileEffectsModule, EmojiModule, UseIsVisibleModule, RootElementContextModule, { useListItem, useListContainerProps, ListNavigatorProvider }, FocusLockRawModule, { useFocusLock, FocusLock }, ManaModalRootModule, BasePopoverModule, ChannelThreadList, matchSorter, CopiableField, SidebarActions, SidebarType, ManaTooltipLayer, ManaUseTooltipTransitionModule, { Floating: Floating$1 } = {}] = Webpack.getBulk({
 		filter: (m) => Filters.byStrings("WebkitLineClamp", "data-text-variant")(m?.render),
 		searchExports: true
 	}, {
@@ -437,11 +438,15 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		searchExports: true
 	}, {
 		filter: Filters.bySource("performEnter", "setNextCallback"),
-		map: {
-			Transition: Filters.byKeys("ENTERING", "EXITING"),
-			CSSTransition: Filters.byPrototypeKeys("addClass"),
-			TransitionGroup: Filters.byPrototypeKeys("handleExited")
-		},
+		map: { Transition: Filters.byKeys("ENTERING", "EXITING") },
+		mapDeclarations: true
+	}, {
+		filter: Filters.bySource("\"appear\"", "\"classNames\""),
+		map: { CSSTransition: Filters.byPrototypeKeys("addClass") },
+		mapDeclarations: true
+	}, {
+		filter: Filters.bySource("childFactory", "handleExited"),
+		map: { TransitionGroup: Filters.byPrototypeKeys("handleExited") },
 		mapDeclarations: true
 	}, { filter: (m) => Filters.byStrings("channel", "messageDisplayCompact")(m?.type) }, { filter: (m) => Filters.byStrings("providedChannel")(m?.type) }, { filter: (m) => Filters.byStrings("\"span\"", "isUnread")(m?.render) }, {
 		filter: (m) => Filters.byStrings("|\\\\d+")(m?.guildId),
@@ -453,7 +458,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 		filter: (m) => Filters.byPrototypeKeys("isStarted", "start", "stop")(m) && Filters.byStrings("setTimeout")(m),
 		searchExports: true
 	}, {
-		filter: Filters.bySource("[CONNECTED]", "gateway"),
+		filter: Filters.bySource("\"ConnectionStore\""),
 		declarationFilter: (m) => m?.dispatcher?.scheduler
 	}, { filter: Filters.byKeys("Anchor") }, {
 		filter: Filters.byKeys("dispatch", "subscribe"),
@@ -593,7 +598,10 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	}, {
 		filter: Filters.byStrings("\"tooltip\"", "isRichTooltip"),
 		searchExports: true
-	}, { filter: Filters.bySource("onExitComplete", "\"tooltip\"") });
+	}, { filter: Filters.bySource("onExitComplete", "\"tooltip\"") }, {
+		filter: Filters.bySource("data-popover-layer"),
+		map: { Floating: Filters.byStrings("children") }
+	});
 	var ModalScrimKeyed = keyed(ModalScrimModule, Filters.byStrings("scrim", "isVisible"));
 	var popToastKeyed = keyed(ToastStoreModule, Filters.byStrings(".delete"));
 	var popToast = unkeyedFn(popToastKeyed);
@@ -953,7 +961,7 @@ var BetterAnimations = (function(react, events, clsx, fs, path, electron, react_
 	}
 	//#endregion
 	//#region package.json
-	var version$1 = "2.1.14";
+	var version$1 = "2.1.15";
 	//#endregion
 	//#region shared/error/structs/BaseError.js
 	var BaseError = class extends Error {
@@ -27152,7 +27160,7 @@ img.BAP__viewport {
     pointer-events: all;
 }
 .BA__animationCard--expanded .BA__animationCard {
-    z-index: 105;
+    z-index: 205;
     transition: transform .4s, z-index .4s step-start;
 }
 .BA__animationCard--expanded .BA__animationCardBg {
@@ -27302,7 +27310,10 @@ img.BAP__viewport {
 		}), /* @__PURE__ */ BdApi.React.createElement("div", { className: (0, clsx.default)("BA__animationPreviewOverlay", { "BA__animationPreviewOverlay--hidden": (isActive || !title) && !error }) }, error ? /* @__PURE__ */ BdApi.React.createElement("div", { className: "BA__animationPreviewError" }, /* @__PURE__ */ BdApi.React.createElement(CircleWarningIcon, {
 			size: "lg",
 			color: colors.STATUS_DANGER
-		}), /* @__PURE__ */ BdApi.React.createElement(Text$1, { variant: "text-sm/bold" }, "An error occurred."), /* @__PURE__ */ BdApi.React.createElement("div", { className: "BA__animationPreviewErrorActions" }, /* @__PURE__ */ BdApi.React.createElement(IconButton, {
+		}), /* @__PURE__ */ BdApi.React.createElement(Text$1, {
+			variant: "text-sm/bold",
+			color: "white"
+		}, "An error occurred."), /* @__PURE__ */ BdApi.React.createElement("div", { className: "BA__animationPreviewErrorActions" }, /* @__PURE__ */ BdApi.React.createElement(IconButton, {
 			tooltip: "View",
 			onClick: stop(() => manager_default.showModal([error]))
 		}, /* @__PURE__ */ BdApi.React.createElement(EyeIcon, {
@@ -27317,7 +27328,7 @@ img.BAP__viewport {
 		})))) : title ? /* @__PURE__ */ BdApi.React.createElement(Text$1, {
 			variant: "heading-sm/semibold",
 			lineClamp: 2,
-			color: "always-white"
+			color: "white"
 		}, title) : null));
 	}
 	css`.BA__animationPreviewContainer {
@@ -31932,101 +31943,123 @@ ${DiscordSelectors.ChannelItem.containerUserOver}, ${DiscordSelectors.ChannelIte
     display: none;
 }``AppView (Servers, Channels)`;
 	//#endregion
-	//#region src/hooks/useAutoPosition.js
-	function autoPosition(self, defaultPosition, source = { align: Position_default.Top }) {
-		if (!self.__autoRef) {
-			self.__autoRef = (0, react.createRef)();
-			self.__autoRef.current = Object.assign({}, source, { position: defaultPosition });
+	//#region src/components/AnimeFloating.jsx
+	function getAlign(position, align) {
+		switch (position) {
+			case "top":
+			case "bottom": switch (align) {
+				case "start": return Position_default.Left;
+				case "end": return Position_default.Right;
+				default: return Position_default.Center;
+			}
+			case "left":
+			case "right": switch (align) {
+				case "start": return Position_default.Top;
+				case "end": return Position_default.Bottom;
+				default: return Position_default.Center;
+			}
+			default: return Position_default.Center;
 		}
+	}
+	function toPositionAlign(placement) {
+		const [position, align] = placement.split("-");
 		return {
-			autoRef: self.__autoRef,
-			setPosition: (position) => self.__autoRef.current.position = position
+			position,
+			align: getAlign(position, align)
 		};
 	}
-	function useAutoPosition(defaultPosition, source = { align: Position_default.Top }) {
-		const autoRef = (0, react.useRef)(Object.assign({}, source, { position: defaultPosition }));
-		return {
+	function AnimeFloating({ in: _in = true, open, module, onExited, transition, ...props }) {
+		open = open && _in;
+		const rootValue = Floating$1({
+			...props,
+			open
+		});
+		const floating = findInReactTree(rootValue, (m) => m?.props?.renderLayer);
+		const anchorRef = (0, react.useRef)();
+		const autoRef = (0, react.useRef)(toPositionAlign(floating.props.placement));
+		const value = floating.type({
+			...floating.props,
+			children: ({ ref, ...props }) => floating.props.children({
+				...props,
+				ref: (el) => {
+					ref(el);
+					anchorRef.current = el;
+				}
+			}),
+			renderLayer: (props) => {
+				autoRef.current = toPositionAlign(props.placement);
+				return floating.props.renderLayer(props);
+			}
+		});
+		const { children } = value.props.children[1].props;
+		const containerRef = (0, react.useRef)();
+		const container = findInReactTree(children, byClassName("layer"));
+		if (container) {
+			const { ref } = container.props;
+			container.props.ref = (el) => {
+				ref(el);
+				containerRef.current = el;
+			};
+		}
+		const anchor = floating.props.overrideTargetRect ?? floating.props.reference ?? anchorRef;
+		const childrenCache = (0, react.useRef)();
+		if (children) childrenCache.current = children;
+		value.props.children[1].props.children = /* @__PURE__ */ BdApi.React.createElement(AnimeTransition, {
+			in: !!children,
+			module,
+			containerRef,
+			anchor,
 			autoRef,
-			setPosition: (position) => autoRef.current.position = position
-		};
+			onExited,
+			...transition
+		}, children || childrenCache.current);
+		Object.assign(floating, value);
+		return rootValue;
 	}
 	//#endregion
 	//#region src/patches/ContextMenu/patchContextSubmenu.jsx
 	function patchContextSubmenu() {
-		const callback = (self, [props], original) => {
-			const layerRef = (0, react.useRef)();
-			const { autoRef, setPosition } = useAutoPosition(Position_default.Right);
-			const timeout = (0, react.useMemo)(() => new Timeout(), []);
-			const [isFocused, setIsFocused] = (0, react.useState)(props.isFocused);
-			(0, react.useEffect)(() => {
-				if (props.isFocused) timeout.start(20, () => setIsFocused(true));
-				else {
-					timeout.stop();
-					setIsFocused(false);
-				}
-			}, [props.isFocused]);
+		const callback = (self, [props], value) => {
 			const { isMainWindow } = useWindow();
 			const module = useModule(ModuleKey_default.ContextMenu);
-			if (!isMainWindow || !module.isEnabled()) return original(props);
-			const value = original({
-				...props,
-				isFocused: true
-			});
-			const { children } = value.props;
-			const i = children.length - 1;
-			if (!children[i]) return value;
-			children[i] = /* @__PURE__ */ BdApi.React.createElement(AnimeTransition, {
-				in: isFocused,
-				layerRef,
-				module,
-				autoRef,
-				anchor: value.props.ref
-			}, /* @__PURE__ */ BdApi.React.createElement(AppLayer, { layerContext: appLayerContext }, (0, react.cloneElement)(children[i], {
-				onPositionChange: setPosition,
-				ref: layerRef
-			})));
+			if (!isMainWindow || !module.isEnabled()) return;
 			return /* @__PURE__ */ BdApi.React.createElement(ErrorBoundary, {
 				module,
-				fallback: /* @__PURE__ */ BdApi.React.createElement("original", props)
-			}, value);
+				fallback: value
+			}, /* @__PURE__ */ BdApi.React.createElement(AnimeFloating, {
+				...value.props,
+				module
+			}));
 		};
-		Patcher_default.instead(ModuleKey_default.ContextMenu, ...MenuSubmenuItemKeyed, callback);
-		Patcher_default.instead(ModuleKey_default.ContextMenu, ...MenuSubmenuListItemKeyed, callback);
+		Patcher_default.after(ModuleKey_default.ContextMenu, ...MenuSubmenuItemKeyed, callback);
+		Patcher_default.after(ModuleKey_default.ContextMenu, ...MenuSubmenuListItemKeyed, callback);
 	}
 	//#endregion
 	//#region src/patches/ContextMenu/patchContextMenu.jsx
 	function patchContextMenu() {
 		const once = ensureOnce();
+		let patchedFloating = null;
 		Patcher_default.after(ModuleKey_default.ContextMenu, ...ContextMenuKeyed, (self, args, value) => {
 			once(() => {
 				injectModule(value?.type, ModuleKey_default.ContextMenu);
-				Patcher_default.after(ModuleKey_default.ContextMenu, value?.type?.prototype, "componentDidMount", (self) => {
-					self.__anchor = mouse_default?.getAnchor();
-				});
 				Patcher_default.after(ModuleKey_default.ContextMenu, value?.type?.prototype, "render", (self, args, value) => {
 					const module = Core_default.getModule(ModuleKey_default.ContextMenu);
-					if (!module.isEnabled()) return;
-					return /* @__PURE__ */ BdApi.React.createElement(ErrorBoundary, {
-						module,
-						fallback: value
-					}, /* @__PURE__ */ BdApi.React.createElement(MainWindowOnly, { fallback: value }, () => {
-						const { config = {} } = self.props;
-						const { autoRef, setPosition } = autoPosition(self, config.position ?? Position_default.Right, { align: config.align ?? Position_default.Top });
-						if (value) TinyPatcher.after(value, "type", (self, [props], value) => {
-							value.props.onPositionChange = props.onPositionChange ?? (() => {});
-							props.setLayerRef?.(value.props.ref);
+					if (!module.isEnabled() || !value) return;
+					value.props.in = self.props.in;
+					value.props.onExited = self.props.onExited;
+					if (patchedFloating) value.type = patchedFloating;
+					else {
+						TinyPatcher.after(ModuleKey_default.ContextMenu, value, "type", (self, [props], value) => {
+							return /* @__PURE__ */ BdApi.React.createElement(AnimeFloating, {
+								...value.props,
+								in: props.in,
+								onExited: props.onExited,
+								module,
+								debug: true
+							});
 						});
-						return /* @__PURE__ */ BdApi.React.createElement(AnimeTransition, {
-							in: self.props.in && !!value,
-							layerRef: () => self.__layerRef?.current,
-							module,
-							autoRef,
-							anchor: self.__anchor
-						}, value && (0, react.cloneElement)(value, {
-							onPositionChange: setPosition,
-							setLayerRef: (value) => self.__layerRef = value
-						}));
-					}));
+						patchedFloating = value.type;
+					}
 				});
 			});
 			const { isMainWindow } = useWindow();
@@ -32048,6 +32081,25 @@ ${DiscordSelectors.ChannelItem.containerUserOver}, ${DiscordSelectors.ChannelIte
 			if (!isMainWindow || !module.isEnabled()) return original(props);
 			return props?.children;
 		});
+	}
+	//#endregion
+	//#region src/hooks/useAutoPosition.js
+	function autoPosition(self, defaultPosition, source = { align: Position_default.Top }) {
+		if (!self.__autoRef) {
+			self.__autoRef = (0, react.createRef)();
+			self.__autoRef.current = Object.assign({}, source, { position: defaultPosition });
+		}
+		return {
+			autoRef: self.__autoRef,
+			setPosition: (position) => self.__autoRef.current.position = position
+		};
+	}
+	function useAutoPosition(defaultPosition, source = { align: Position_default.Top }) {
+		const autoRef = (0, react.useRef)(Object.assign({}, source, { position: defaultPosition }));
+		return {
+			autoRef,
+			setPosition: (position) => autoRef.current.position = position
+		};
 	}
 	//#endregion
 	//#region src/patches/BasePopout/patchBasePopout.jsx
@@ -32113,15 +32165,7 @@ ${DiscordSelectors.ChannelItem.containerUserOver}, ${DiscordSelectors.ChannelIte
 			isVisible: true,
 			isRendered: true
 		});
-		const layer = findInReactTree(value, (m) => m?.props?.position);
-		if (!layer) throw new Error("Unable to find ReferencePositionLayer");
-		const layerRef = (0, react.useRef)();
-		const { autoRef, setPosition } = useAutoPosition(null);
 		const safeShouldShow = useSafeBoolean(shouldShow);
-		Object.assign(layer.props, {
-			ref: layerRef,
-			onPositionChange: setPosition
-		});
 		const onRest = (isVisible) => () => {
 			if (!isVisible) onExitComplete?.();
 			onAnimationRest?.({
@@ -32135,15 +32179,13 @@ ${DiscordSelectors.ChannelItem.containerUserOver}, ${DiscordSelectors.ChannelIte
 				phase: isVisible ? SpringTransitionPhases.ENTER : SpringTransitionPhases.LEAVE
 			});
 		};
-		return /* @__PURE__ */ BdApi.React.createElement(AnimeTransition, {
+		return /* @__PURE__ */ BdApi.React.createElement(AnimeFloating, {
+			...value.props,
 			in: safeShouldShow,
-			layerRef,
 			module,
-			autoRef,
-			anchor: layer.props.targetRef,
 			onEntered: onRest(true),
 			onExited: onRest(false)
-		}, value);
+		});
 	}
 	function patchUseTooltipTransition() {
 		Patcher_default.instead(ModuleKey_default.Tooltips, ...Mana.useTooltipTransitionKeyed, (self, [options], original) => {
@@ -32161,7 +32203,7 @@ ${DiscordSelectors.ChannelItem.containerUserOver}, ${DiscordSelectors.ChannelIte
 				if (!tooltipLayer) throw new Error("Unable to find TooltipLayer");
 				Object.assign(tooltipLayer, /* @__PURE__ */ BdApi.React.createElement(ErrorBoundary, {
 					module,
-					fallback: value
+					fallback: render({}, shouldShow)
 				}, /* @__PURE__ */ BdApi.React.createElement(TooltipTransition$1, {
 					...tooltipLayer.props,
 					module,
@@ -33866,6 +33908,11 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			"type": "fixed",
 			"title": "Fixes",
 			"items": ["Modals: Updated to work in the latest release of Discord."]
+		}] },
+		"2.1.15": { "changes": [{
+			"type": "fixed",
+			"title": "Fixes",
+			"items": ["Updated to work in the latest release of Discord."]
 		}] }
 	};
 	//#endregion
@@ -33946,7 +33993,7 @@ ${DiscordSelectors.Layer.clickTrapContainer}:has([data-baa-type="exit"]) {
 			if (a && b && a.major !== b.major && [b.minor, b.patch].some((i) => i !== "0")) this.showPluginModal(`${b.major}.0.0`);
 		}
 		showPluginModalIfNeeded() {
-			if (this.data.version === "2.1.14" && this.data.hasShownChangelog) return;
+			if (this.data.version === "2.1.15" && this.data.hasShownChangelog) return;
 			this.showPluginModal(version$1);
 			this.showPluginMajorModalIfNeeded();
 			this.data = {
