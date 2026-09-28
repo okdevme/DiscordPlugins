@@ -120,7 +120,7 @@ const ReplyMessageHeader = Webpack.getModule(Filters.bySource('replyReference', 
 const createMessage = Webpack.getByStrings('createMessage: author cannot be undefined')
 
 const Selectors = {
-  ChannelItem: Webpack.getByKeys('unread', 'link'),
+  ChannelItem: Webpack.getByKeys('wrapper', 'modeMuted') || Webpack.getByKeys('unread', 'link'),
   Message: Webpack.getByKeys('repliedTextPreview', 'repliedTextContent'),
   App: Webpack.getByKeys('app', 'layers'),
   Base: Webpack.getByKeys('base', 'sidebar'),
