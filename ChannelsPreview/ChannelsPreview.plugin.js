@@ -4,7 +4,7 @@
  * @authorLink https://github.com/okdevme/DiscordPlugins
  * @invite M8DBtcZjXD
  * @donate https://donationalerts.com/r/arg0nny
- * @version 2.1.16
+ * @version 2.1.16-local.11
  * @description Allows you to view recent messages in channels without switching to it.
  * @website https://github.com/okdevme/DiscordPlugins/tree/master/ChannelsPreview
  * @source https://raw.githubusercontent.com/okdevme/DiscordPlugins/master/ChannelsPreview/ChannelsPreview.plugin.js
@@ -15,7 +15,7 @@
 const config = {
   info: {
     name: 'ChannelsPreview',
-    version: '2.1.16',
+    version: '2.1.16-local.11',
     description: 'Allows you to view recent messages in channels without switching to it.'
   },
   changelog: [
@@ -23,12 +23,26 @@ const config = {
       type: 'fixed',
       title: 'Fixes',
       items: [
-        'Updated author GitHub username.'
+        'Updated author GitHub username.',
+        'Local compatibility: skip unavailable Discord modules with a diagnostic instead of aborting startup.',
+        'Local compatibility: when FocusRing is not a module, attach DM preview triggers from the DM row instead of disabling DMs.',
+        'Local compatibility: omit only the dashed divider rule when that class module is missing.',
+        'Local diagnostic: settings gear shows instrumentation when the settings UI cannot render. This does not restore previews.',
+        'Settings use plain layout and checkboxes where Discord Stack or Switch is missing. Guild rows without a renderPopout anchor are wrapped in the existing preview popout.',
+        'Chat darkening no longer throws when the page class is missing, and thread renders without a thread id no longer throw.',
+        'A preview opens once the first message page is in the store. Older history beyond that page no longer keeps the popout hidden.',
+        'The preview dialog renders when Discord’s messagesPopoutWrap class is missing.',
+        'Missing preview scroller and divider use native DOM fallbacks. Message rows still use Discord’s message component.',
+        'The native scroller follows new messages only while it is pinned to the newest end.',
+        'Thread previews read providedChannel, the prop this Discord build destructures.'
       ]
     }
   ]
 }
 /* ### CONFIG END ### */
+
+// Unofficial local compatibility patch based on arg0NNY's ChannelsPreview 2.1.16.
+// Original metadata and upstream source URL are preserved above; this is not an official release.
 
 const {
   DOM,
@@ -44,6 +58,98 @@ const {
 const { Filters } = Webpack
 const { ErrorBoundary } = Components
 
+// Local compatibility helpers: only patch the exact legacy targets resolved above.
+const unavailableFeatures = new Set()
+const patchResults = []
+const runtimeCounts = {
+  triggerHandlers: 0,
+  hoverEntries: 0,
+  previewRequests: 0,
+  decoratedMiss: 0,
+  popoutAnchorHit: 0,
+  popoutAnchorMiss: 0,
+  popoutWraps: 0,
+  popoutRenders: 0,
+  popoutShouldShow: 0,
+  popoutBlockedFetch: 0,
+  popoutBlockedNoMessages: 0,
+  previewDialogRenders: 0,
+  previewRenderErrors: 0,
+  darkenClass: 0,
+  darkenRoot: 0,
+  darkenMiss: 0,
+  threadPropMiss: 0,
+  popoutTargetReady: 0
+}
+
+const previewFetches = new Map()
+const previewAnchors = new Map()
+const diagnosticErrors = []
+
+function sanitizeDiagnosticText (value) {
+  return String(value == null ? '' : value)
+    .replace(/mfa\.[A-Za-z0-9._-]{8,}/gi, '[redacted]')
+    .replace(/\b[\w-]{20,}\.[\w-]{6,}\.[\w-]{20,}\b/g, '[redacted]')
+    .replace(/\b\d{17,}\b/g, '[id]')
+    .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[email]')
+    .replace(/[\r\n]+/g, ' ')
+    .slice(0, 300)
+}
+
+function recordDiagnosticError (source, error) {
+  if (!error) return
+  const name = typeof error.name === 'string' && /^[A-Za-z][A-Za-z0-9]{0,40}$/.test(error.name)
+    ? error.name
+    : 'Error'
+  const frames = (typeof error.stack === 'string' ? error.stack.split('\n') : [])
+    .filter(line => /ChannelsPreview|\bplugin\.js\b/.test(line))
+    .map(line => sanitizeDiagnosticText(line))
+    .slice(0, 6)
+  const message = sanitizeDiagnosticText(error.message)
+  if (diagnosticErrors.some(entry => entry.source === source && entry.message === message)) return
+  diagnosticErrors.push({ source, name, message, frames })
+}
+
+function isValidPatchTarget (target) {
+  if (!Array.isArray(target) || target.length !== 2) return false
+  const [module, methodName] = target
+  const moduleType = typeof module
+  return module != null
+    && (moduleType === 'object' || moduleType === 'function')
+    && typeof methodName === 'string'
+    && typeof module[methodName] === 'function'
+}
+
+function disableFeature (feature) {
+  unavailableFeatures.add(feature)
+}
+
+function patchAfter (feature, target, callback) {
+  const ok = isValidPatchTarget(target)
+  const methodName = Array.isArray(target) ? target[1] : ''
+  patchResults.push({
+    feature: feature === 'DM previews' && methodName === 'render' ? 'DM focus ring' : feature,
+    ok
+  })
+  if (!ok) {
+    disableFeature(feature)
+    return false
+  }
+  Patcher.after(...target, callback)
+  return true
+}
+
+function patchBefore (feature, target, callback) {
+  const ok = isValidPatchTarget(target)
+  patchResults.push({ feature, ok })
+  if (!ok) {
+    disableFeature(feature)
+    return false
+  }
+  Patcher.before(...target, callback)
+  return true
+}
+
 const MessageActions = Webpack.getByKeys('jumpToMessage', '_sendMessage')
 const MessageStore = Webpack.getStore('MessageStore')
 const Flux = Webpack.getByKeys('Store', 'connectStores')
@@ -51,6 +157,30 @@ const Dispatcher = Webpack.getModule(Filters.byKeys('dispatch', 'subscribe'), { 
 const ChannelTypes = Webpack.getModule(Filters.byKeys('GUILD_TEXT'), { searchExports: true })
 
 const findInReactTree = (tree, searchFilter) => Utils.findInTree(tree, searchFilter, { walkable: ['props', 'children', 'child', 'sibling'] })
+
+// Used only when FocusRing itself is not a patchable module. Same walk keys as findInReactTree.
+// Keeps the deepest match so an outer row wrapper does not hide the inner channel node.
+function findDeepestInReactTree (tree, predicate) {
+  let found = null
+  let foundDepth = -1
+  const seen = new WeakSet()
+  const walk = (node, depth) => {
+    if (Array.isArray(node)) {
+      for (const child of node) walk(child, depth + 1)
+      return
+    }
+    if (!node || typeof node !== 'object') return
+    if (seen.has(node)) return
+    seen.add(node)
+    if (predicate(node) && depth > foundDepth) {
+      found = node
+      foundDepth = depth
+    }
+    for (const key of ['props', 'children', 'child', 'sibling']) walk(node[key], depth + 1)
+  }
+  walk(tree, 0)
+  return found
+}
 
 const Selectors = {
   Messages: Webpack.getByKeys('message', 'cozyMessage'),
@@ -253,6 +383,72 @@ function useGenerateChannelStream({ channel, messageCountLimit }) {
   return slicedStream
 }
 
+function isRenderableType (type) {
+  return typeof type === 'function' || (type != null && typeof type === 'object')
+}
+
+function describeThreadArg (value) {
+  if (value == null) return 'missing'
+  const kind = typeof value
+  if (kind !== 'object') return kind
+  const keys = Object.keys(value).filter(key => /^[A-Za-z_][A-Za-z0-9_]{0,40}$/.test(key)).slice(0, 8)
+  return 'object:' + (keys.join(',') || 'none')
+}
+
+// Native stand-in. Not Discord's divider component.
+function PreviewDividerFallback ({ className, children }) {
+  return React.createElement('div', {
+    className: className || undefined,
+    role: 'separator',
+    children
+  })
+}
+
+// Native stand-in. Not Discord's pin-to-bottom scroller.
+// Column-reverse keeps the newest end at scrollTop 0. While pinned, later
+// renders return there. A scroll away stays put until the user returns.
+function PreviewScrollerFallback ({ scrollerRef, className, children }) {
+  const nodeRef = React.useRef(null)
+  const pinnedRef = React.useRef(true)
+  React.useEffect(() => {
+    const node = nodeRef.current
+    if (scrollerRef) {
+      scrollerRef.current = { getScrollerNode: () => nodeRef.current }
+    }
+    if (!node || typeof node.addEventListener !== 'function') {
+      if (node && pinnedRef.current) node.scrollTop = 0
+      return () => {
+        if (scrollerRef) scrollerRef.current = null
+      }
+    }
+    const onScroll = () => {
+      pinnedRef.current = node.scrollTop <= 2
+    }
+    node.addEventListener('scroll', onScroll)
+    if (pinnedRef.current) node.scrollTop = 0
+    return () => {
+      node.removeEventListener('scroll', onScroll)
+      if (scrollerRef) scrollerRef.current = null
+    }
+  }, [])
+  React.useEffect(() => {
+    const node = nodeRef.current
+    if (!node || !pinnedRef.current) return
+    if (node.scrollTop > 2) node.scrollTop = 0
+  })
+  return React.createElement('div', {
+    ref: nodeRef,
+    className: className,
+    style: {
+      overflowY: 'auto',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column-reverse'
+    },
+    children
+  })
+}
+
 function PreviewDialog ({ channel, messages }) {
   const scrollerRef = React.useRef(null)
 
@@ -282,13 +478,17 @@ function PreviewDialog ({ channel, messages }) {
       switch (item.type) {
         case 'EMPTY_MESSAGE':
           return React.createElement(EmptyMessage, { channel })
-        case ChannelStreamItemTypes.DIVIDER:
-          return React.createElement(MessageDivider, {
+        case ChannelStreamItemTypes.DIVIDER: {
+          const dividerProps = {
             className: item.cut ? 'CP__divider-cut' : '',
             isUnread: !!item.unreadId,
             isBeforeGroup: !item.content && isGroupStarter(channelStream[index + 1]),
             children: item.content
-          })
+          }
+          return isRenderableType(MessageDivider)
+            ? React.createElement(MessageDivider, dividerProps)
+            : React.createElement(PreviewDividerFallback, dividerProps)
+        }
         case ChannelStreamItemTypes.MESSAGE:
         case ChannelStreamItemTypes.THREAD_STARTER_MESSAGE:
           return React.createElement(
@@ -304,20 +504,24 @@ function PreviewDialog ({ channel, messages }) {
       }
     })
 
+  const popoutClass = Selectors.Popout && Selectors.Popout.messagesPopoutWrap
+  const scrollerClass = Selectors.Chat && Selectors.Chat.scrollerContent
   return React.createElement(
     'div',
     {
-      className: `CP__popout group-spacing-${messageGroupSpacing} ${Selectors.Popout.messagesPopoutWrap}`,
+      className: 'CP__popout group-spacing-' + messageGroupSpacing +
+        (typeof popoutClass === 'string' && popoutClass ? ' ' + popoutClass : ''),
       style: {
         height: (settings.appearance.popoutHeight ?? 30) + 'vh'
       }
     },
     React.createElement(PreviewContext.Provider, {
       value: { channel },
-      children: React.createElement(PinToBottomScrollerAuto, {
-        ref: scrollerRef,
+      children: React.createElement(isRenderableType(PinToBottomScrollerAuto) ? PinToBottomScrollerAuto : PreviewScrollerFallback, {
+        ref: isRenderableType(PinToBottomScrollerAuto) ? scrollerRef : undefined,
+        scrollerRef,
         className: 'CP__scroller',
-        contentClassName: Selectors.Chat.scrollerContent,
+        contentClassName: typeof scrollerClass === 'string' ? scrollerClass : undefined,
         onResize: () => {}, // Causes error if not provided
         onScroll: () => {}, // And this one is just to be safe :)
         children: React.createElement('div', {
@@ -333,35 +537,230 @@ function PreviewDialog ({ channel, messages }) {
 }
 
 function ChannelPopout ({ channel, selected, messages, children, shouldShow: _shouldShow = false, ...props }) {
+  runtimeCounts.popoutRenders += 1
   const isShiftKeyPressed = useIsShiftKeyPressed()
+  const messageCount = messages && typeof messages.length === 'number' ? messages.length : null
+  if (messageCount == null) runtimeCounts.popoutBlockedNoMessages += 1
 
-  const shouldShow = _shouldShow && !selected
+  const shouldShow = messageCount != null && _shouldShow && !selected
     && (settings.trigger.displayOn !== 'shift-hover' || isShiftKeyPressed)
-    && (settings.behaviour.nsfw !== 'hide' || !channel.nsfw)
-  const isFetchable = messages.length < settings.appearance.messagesCount && (messages.hasMoreBefore || messages.hasMoreAfter)
+    && (settings.behaviour.nsfw !== 'hide' || !channel?.nsfw)
+  const hasMore = !!(messages && (messages.hasMoreBefore || messages.hasMoreAfter))
+  const fetchState = channel && channel.id != null
+    ? (previewFetches.get(channel.id) || { pending: false, settled: false })
+    : { pending: false, settled: false }
+  // hasMoreBefore means older history exists. It is not an in-flight fetch.
+  // Hide only the empty first page until that fetch settles.
+  const waitingForFirstPage = messageCount === 0 && hasMore && !fetchState.settled
+  if (shouldShow && waitingForFirstPage) runtimeCounts.popoutBlockedFetch += 1
+  const reveal = shouldShow && !waitingForFirstPage
+  if (reveal) {
+    runtimeCounts.popoutShouldShow += 1
+    const target = props.targetElementRef && props.targetElementRef.current
+    if (target != null && typeof target === 'object') runtimeCounts.popoutTargetReady += 1
+  }
 
   React.useEffect(() => {
-    if (shouldShow && isFetchable)
-      MessageActions.fetchMessages({ channelId: channel.id, limit: settings.appearance.messagesCount })
-  }, [shouldShow, isFetchable])
+    if (!shouldShow || !channel || channel.id == null || messageCount == null) return
+    if (!(messageCount < settings.appearance.messagesCount && hasMore)) return
+    const state = previewFetches.get(channel.id) || { pending: false, settled: false }
+    if (state.pending || state.settled) return
+    previewFetches.set(channel.id, state)
+    let result
+    try {
+      result = MessageActions.fetchMessages({
+        channelId: channel.id,
+        limit: settings.appearance.messagesCount
+      })
+    } catch (error) {
+      state.settled = true
+      recordDiagnosticError('preview-fetch', error)
+      return
+    }
+    const finish = () => {
+      state.pending = false
+      state.settled = true
+      Dispatcher.dispatch({ type: 'CP__FORCE_UPDATE' })
+    }
+    if (result && typeof result.then === 'function') {
+      state.pending = true
+      result.then(finish, finish)
+    } else {
+      finish()
+    }
+  }, [shouldShow, messageCount, hasMore])
   React.useEffect(
-    () => () => Dispatcher.dispatch({ type: 'CP__PREVIEW_SHOULD_HIDE', channelId: channel.id }),
-    [channel.id]
+    () => () => channel && Dispatcher.dispatch({ type: 'CP__PREVIEW_SHOULD_HIDE', channelId: channel.id }),
+    [channel && channel.id]
   )
 
+  const row = typeof children === 'function' ? children : () => children
   return React.createElement(Popout, {
     position: 'right',
     align: 'center',
-    renderPopout: () => React.createElement(ErrorBoundary, {
-      name: 'PreviewDialog',
-      children: React.createElement(PreviewDialog, { channel, messages })
-    }),
-    children,
-    shouldShow: shouldShow && !isFetchable,
+    renderPopout: () => {
+      runtimeCounts.previewDialogRenders += 1
+      return React.createElement(PreviewRenderBoundary, {
+        children: React.createElement(PreviewDialog, { channel, messages })
+      })
+    },
+    children: row,
+    shouldShow: reveal,
     spacing: 16,
     disablePointerEvents: true,
     ...props
   })
+}
+
+class PreviewRenderBoundary extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { failed: false }
+  }
+  static getDerivedStateFromError () {
+    return { failed: true }
+  }
+  componentDidCatch (error) {
+    runtimeCounts.previewRenderErrors += 1
+    recordDiagnosticError('preview-render', error)
+  }
+  render () {
+    if (this.state.failed) return null
+    return this.props.children
+  }
+}
+
+function isPresent (value) {
+  return value != null && (typeof value === 'object' || typeof value === 'function')
+}
+
+function moduleFlags () {
+  const dividerClass = Selectors.MessageDividers?.divider
+  let bdVersion = 'unavailable'
+  try {
+    const version = BdApi && (BdApi.version || BdApi.Version)
+    if (typeof version === 'string') bdVersion = sanitizeDiagnosticText(version)
+  } catch (error) {
+    bdVersion = 'unavailable'
+  }
+  return {
+    bdVersion,
+    flags: {
+      channelItem: isValidPatchTarget(ChannelItem),
+      voiceItem: isValidPatchTarget(VoiceChannelItem),
+      stageItem: isValidPatchTarget(StageVoiceChannelItem),
+      dmItem: isValidPatchTarget(DMChannelItem),
+      channelLink: isValidPatchTarget(ChannelLink),
+      threadItem: isValidPatchTarget([ThreadChannelItem, 'type']),
+      appView: isValidPatchTarget(AppView),
+      attachment: isValidPatchTarget(Attachment),
+      embed: isValidPatchTarget([Embed && Embed.prototype, 'render']),
+      focusRing: isValidPatchTarget([FocusRing, 'render']),
+      dividerClass: typeof dividerClass === 'string' && /^[A-Za-z0-9_-]+$/.test(dividerClass),
+      appViewClass: typeof (Selectors.AppView && Selectors.AppView.page) === 'string',
+      popout: isPresent(Popout),
+      stack: isPresent(Stack),
+      fieldSet: isPresent(FieldSet),
+      radioGroup: isPresent(RadioGroup),
+      slider: isPresent(Slider),
+      switchItem: isPresent(Switch),
+      divider: isPresent(Divider),
+      field: isPresent(Field),
+      checkbox: isPresent(Checkbox),
+      reactDOM: isPresent(typeof BdApi !== 'undefined' && BdApi.ReactDOM)
+    }
+  }
+}
+
+function buildDiagnosticReport () {
+  const info = moduleFlags()
+  const lines = [
+    'ChannelsPreview diagnostic instrumentation',
+    'Not a settings repair. Stored settings were not modified. This panel does not restore previews.',
+    'pluginVersion: ' + config.info.version,
+    'bdVersion: ' + info.bdVersion,
+    'modules:'
+  ]
+  for (const name of Object.keys(info.flags)) {
+    lines.push('  ' + name + '=' + info.flags[name])
+  }
+  lines.push('patches:')
+  if (!patchResults.length) lines.push('  none')
+  for (const result of patchResults) lines.push('  ' + result.feature + '=' + result.ok)
+  lines.push(
+    'counts:',
+    '  triggerHandlers=' + runtimeCounts.triggerHandlers,
+    '  hoverEntries=' + runtimeCounts.hoverEntries,
+    '  previewRequests=' + runtimeCounts.previewRequests,
+    '  decoratedMiss=' + runtimeCounts.decoratedMiss,
+    '  popoutAnchorHit=' + runtimeCounts.popoutAnchorHit,
+    '  popoutAnchorMiss=' + runtimeCounts.popoutAnchorMiss,
+    '  popoutWraps=' + runtimeCounts.popoutWraps,
+    '  popoutRenders=' + runtimeCounts.popoutRenders,
+    '  popoutShouldShow=' + runtimeCounts.popoutShouldShow,
+    '  popoutBlockedFetch=' + runtimeCounts.popoutBlockedFetch,
+    '  popoutBlockedNoMessages=' + runtimeCounts.popoutBlockedNoMessages,
+    '  previewDialogRenders=' + runtimeCounts.previewDialogRenders,
+    '  previewRenderErrors=' + runtimeCounts.previewRenderErrors,
+    '  darkenClass=' + runtimeCounts.darkenClass,
+    '  darkenRoot=' + runtimeCounts.darkenRoot,
+    '  darkenMiss=' + runtimeCounts.darkenMiss,
+    '  threadPropMiss=' + runtimeCounts.threadPropMiss,
+    '  popoutTargetReady=' + runtimeCounts.popoutTargetReady,
+    'errors:'
+  )
+  if (!diagnosticErrors.length) lines.push('  none')
+  for (const entry of diagnosticErrors) {
+    lines.push('  ' + entry.source + ' | ' + entry.name + ' | ' + entry.message)
+    if (!entry.frames.length) lines.push('  stack: none')
+    for (const frame of entry.frames) lines.push('  ' + frame)
+  }
+  return lines.join('\n')
+}
+
+function SettingsStack ({ children, gap = 16 }) {
+  const items = Array.isArray(children) ? children.filter(Boolean) : [children]
+  return React.createElement('div', {
+    style: { display: 'flex', flexDirection: 'column', gap: gap + 'px' }
+  }, ...items)
+}
+
+function NativeSwitch ({ label, description, checked, onChange }) {
+  return React.createElement('label', {
+    style: { display: 'flex', gap: '8px', alignItems: 'flex-start' }
+  }, [
+    React.createElement('input', {
+      type: 'checkbox',
+      checked: !!checked,
+      onChange: event => onChange(event.currentTarget.checked)
+    }),
+    React.createElement('span', null, [
+      label,
+      description ? React.createElement('div', null, description) : null
+    ])
+  ])
+}
+
+class SettingsPanelBoundary extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { failed: false }
+  }
+  static getDerivedStateFromError () {
+    return { failed: true }
+  }
+  componentDidCatch (error) {
+    recordDiagnosticError('settings-render', error)
+  }
+  render () {
+    if (this.state.failed) {
+      return React.createElement('pre', {
+        id: 'ChannelsPreview-diagnostic-text',
+        style: { whiteSpace: 'pre-wrap' }
+      }, buildDiagnosticReport())
+    }
+    return this.props.children
+  }
 }
 
 function ChannelPopoutBackdrop () {
@@ -375,20 +774,39 @@ function ChannelPopoutBackdrop () {
 
 module.exports = class ChannelsPreview {
   start () {
-    this.injectCSS()
+    if (this.started) return
+    this.started = true
 
-    this.patchChannelItem()
-    this.patchChannelLink()
-    this.patchThreadChannelItem()
-    this.patchDMChannelItem()
-    this.patchAppView()
-    this.patchMedia()
-    this.attachKeyboardEvents()
+    try {
+      this.injectCSS()
 
-    forceAppUpdate()
+      this.patchChannelItem()
+      this.patchChannelLink()
+      this.patchThreadChannelItem()
+      this.patchDMChannelItem()
+      this.patchAppView()
+      this.patchMedia()
+      this.attachKeyboardEvents()
+
+      if (unavailableFeatures.size) {
+        const features = [...unavailableFeatures].join(', ')
+        console.warn(`[ChannelsPreview] Unavailable Discord modules; disabled: ${features}`)
+        UI.showToast(`ChannelsPreview: disabled unavailable features: ${features}. Other previews may still work.`, {
+          type: 'warning',
+          timeout: 10000
+        })
+      }
+
+      forceAppUpdate()
+    } catch (error) {
+      recordDiagnosticError('start', error)
+      this.stop()
+      throw error
+    }
   }
 
   showPopout (channel) {
+    runtimeCounts.previewRequests += 1
     if (!SUPPORTED_CHANNEL_TYPES.includes(channel.type)) return
 
     Dispatcher.dispatch({ type: 'CP__PREVIEW_SHOULD_SHOW', channelId: channel.id })
@@ -405,16 +823,30 @@ module.exports = class ChannelsPreview {
       value.props.messages = useStateFromStores([MessageStore], () => MessageStore.getMessages(channel.id))
       value.props.CP__shouldShowPopout = useStateFromStores([ShownPreviewsStore], () => ShownPreviewsStore.shouldShow(channel.id))
 
-      if (isPatched || !value?.type?.DecoratedComponent?.prototype?.render) return
+      if (!value?.type?.DecoratedComponent?.prototype?.render) {
+        runtimeCounts.decoratedMiss += 1
+        return this.wrapChannelPopout({
+          value,
+          channel,
+          messages: value.props.messages,
+          selected: self?.props?.selected,
+          shouldShow: value.props.CP__shouldShowPopout
+        })
+      }
+      if (isPatched) return
       isPatched = true
 
       Patcher.after(value.type.DecoratedComponent.prototype, 'render', (self, args, value) => {
         const { channel, messages, selected, CP__shouldShowPopout: shouldShow } = self.props
 
-        if (!SUPPORTED_CHANNEL_TYPES.includes(channel.type)) return
+        if (!channel || !SUPPORTED_CHANNEL_TYPES.includes(channel.type)) return
 
         const popout = findInReactTree(value, m => m?.props?.renderPopout)
-        if (!popout) return
+        if (!popout) {
+          runtimeCounts.popoutAnchorMiss += 1
+          return this.wrapChannelPopout({ value, channel, messages, selected, shouldShow })
+        }
+        runtimeCounts.popoutAnchorHit += 1
 
         if (!self.channelItemRef && !self.__channelItemRef) {
           self.__channelItemRef = React.createRef(null)
@@ -445,6 +877,22 @@ module.exports = class ChannelsPreview {
     }
   }
 
+  wrapChannelPopout ({ value, channel, messages, selected, shouldShow }) {
+    if (!channel) return value
+    if (value && value.props && !value.props.ref) value.props.ref = React.createRef(null)
+    const linkAnchor = channel && channel.id != null ? previewAnchors.get(channel.id) : null
+    runtimeCounts.popoutWraps += 1
+    return React.createElement(ChannelPopout, {
+      targetElementRef: linkAnchor || (value && value.props ? value.props.ref : null),
+      channel,
+      selected: !!selected,
+      messages,
+      shouldShow,
+      onRequestClose: () => this.closePopout(channel.id),
+      children: () => value
+    })
+  }
+
   patchLink ({ link, channel, timeoutRef = React.useRef(null), selected }) {
     const openPopout = () => !selected && this.showPopout(channel)
 
@@ -455,9 +903,13 @@ module.exports = class ChannelsPreview {
       Patcher.before(link.props, 'onMouseUp', (_, [e]) => e.button === 1 && openPopout())
     }
 
-    if (['hover', 'shift-hover'].includes(settings.trigger.displayOn))
-      Patcher.before(link.props, 'onMouseEnter',
-        () => timeoutRef.current = setTimeout(openPopout, settings.trigger.hoverDelay * 1000))
+    if (['hover', 'shift-hover'].includes(settings.trigger.displayOn)) {
+      Patcher.before(link.props, 'onMouseEnter', () => {
+        runtimeCounts.hoverEntries += 1
+        timeoutRef.current = setTimeout(openPopout, settings.trigger.hoverDelay * 1000)
+      })
+      runtimeCounts.triggerHandlers += 1
+    }
 
     Patcher.before(link.props, 'onMouseLeave', () => {
       clearTimeout(timeoutRef.current)
@@ -483,6 +935,7 @@ module.exports = class ChannelsPreview {
         break
       }
     }
+    if (channel && channel.id != null && ref) previewAnchors.set(channel.id, ref)
 
     React.useEffect(() => {
       const onWheel = e => {
@@ -500,13 +953,13 @@ module.exports = class ChannelsPreview {
   }
 
   patchChannelItem () {
-    Patcher.after(...ChannelItem, this.makeChannelItemCallback())
-    Patcher.after(...VoiceChannelItem, this.makeChannelItemCallback())
-    Patcher.after(...StageVoiceChannelItem, this.makeChannelItemCallback())
+    patchAfter('text channel previews', ChannelItem, this.makeChannelItemCallback())
+    patchAfter('voice channel previews', VoiceChannelItem, this.makeChannelItemCallback())
+    patchAfter('stage channel previews', StageVoiceChannelItem, this.makeChannelItemCallback())
   }
 
   patchChannelLink () {
-    Patcher.after(...ChannelLink, (self, [{ channel, selected }], value) => {
+    patchAfter('channel link triggers', ChannelLink, (self, [{ channel, selected }], value) => {
       const link = findInReactTree(value, m => m?.props?.role && m?.props?.target)
       if (!link) return
 
@@ -515,7 +968,21 @@ module.exports = class ChannelsPreview {
   }
 
   patchThreadChannelItem () {
-    Patcher.after(ThreadChannelItem, 'type', (self, [{ thread, isSelectedChannel }], value) => {
+    patchAfter('thread previews', [ThreadChannelItem, 'type'], (self, args, value) => {
+      const props = args && args[0]
+      // This build's original type() destructures {providedChannel} from its first argument.
+      const thread = props && (props.thread || props.providedChannel)
+      const isSelectedChannel = props && props.isSelectedChannel
+      if (!thread || thread.id == null) {
+        runtimeCounts.threadPropMiss += 1
+        recordDiagnosticError('thread-preview', new Error(
+          'threadType=' + (thread == null ? 'missing' : typeof thread) +
+          '; arg0=' + describeThreadArg(props) +
+          '; self=' + describeThreadArg(self) +
+          '; argc=' + (args && typeof args.length === 'number' ? args.length : 0)
+        ))
+        return
+      }
       useUpdater()
       const messages = useStateFromStores([MessageStore], () => MessageStore.getMessages(thread.id))
       const shouldShow = useStateFromStores([ShownPreviewsStore], () => ShownPreviewsStore.shouldShow(thread.id))
@@ -543,14 +1010,48 @@ module.exports = class ChannelsPreview {
     })
   }
 
+  attachDMPreviewLink (tree, channel, selected) {
+    const channelClass = Selectors.Channel?.channel
+    if (typeof channelClass !== 'string' || !channelClass) return
+
+    // Same relationship as the FocusRing.render hook: the channel node receives className,
+    // and its child is the link passed to patchLink.
+    const ring = findDeepestInReactTree(tree, node => {
+      const className = node?.props?.className
+      return typeof className === 'string'
+        && className.includes(channelClass)
+        && node.props.children?.props
+    })
+    if (!ring) return
+
+    this.patchLink({
+      link: ring.props.children,
+      channel,
+      selected
+    })
+  }
+
   patchDMChannelItem () {
-    Patcher.after(...DMChannelItem, (self, [{ channel, selected }], value) => {
+    // The DM row module is required. FocusRing is only the legacy place the link was patched.
+    if (!isValidPatchTarget(DMChannelItem)) {
+      disableFeature('DM previews')
+      return
+    }
+
+    const focusRingReady = isValidPatchTarget([FocusRing, 'render'])
+    if (!focusRingReady) {
+      console.warn('[ChannelsPreview] FocusRing is not a module; DM preview triggers attach inside the DM row instead of FocusRing.render.')
+    }
+
+    patchAfter('DM previews', DMChannelItem, (self, [{ channel, selected }], value) => {
       useUpdater()
       const messages = useStateFromStores([MessageStore], () => MessageStore.getMessages(channel.id))
       const shouldShow = useStateFromStores([ShownPreviewsStore], () => ShownPreviewsStore.shouldShow(channel.id))
 
       const ref = React.useRef(null)
       if (!value.props.ref) value.props.ref = ref
+
+      if (!focusRingReady) this.attachDMPreviewLink(value, channel, selected)
 
       const popout = React.createElement(ChannelPopout, {
         targetElementRef: value.props.ref,
@@ -568,7 +1069,10 @@ module.exports = class ChannelsPreview {
 
       return popout
     })
-    Patcher.after(FocusRing, 'render', (self, [{ className }], value) => {
+
+    if (!focusRingReady) return
+
+    patchAfter('DM previews', [FocusRing, 'render'], (self, [{ className }], value) => {
       if (!className?.includes(Selectors.Channel.channel)) return
 
       const { channel, selected } = React.useContext(DMChannelContext)
@@ -583,37 +1087,52 @@ module.exports = class ChannelsPreview {
   }
 
   patchAppView () {
-    Patcher.after(...AppView, (self, args, value) => {
+    patchAfter('chat darkening', AppView, (self, args, value) => {
       useUpdater()
       if (!settings.appearance.darkenChat) return
 
-      const page = findInReactTree(value, m => m?.className?.includes(Selectors.AppView.page))
-      if (!page) return
-
-      page.children = [
-        page.children,
-        React.createElement(ChannelPopoutBackdrop)
-      ]
+      const pageClass = Selectors.AppView && Selectors.AppView.page
+      if (typeof pageClass === 'string' && pageClass) {
+        const page = findInReactTree(value, m => typeof m?.className === 'string' && m.className.includes(pageClass))
+        if (!page) return
+        page.children = [
+          page.children,
+          React.createElement(ChannelPopoutBackdrop)
+        ]
+        runtimeCounts.darkenClass += 1
+        return
+      }
+      if (value && typeof value === 'object') {
+        const current = value.children != null ? value.children : value.props && value.props.children
+        const next = [current, React.createElement(ChannelPopoutBackdrop)]
+        value.children = next
+        if (value.props) value.props.children = next
+        runtimeCounts.darkenRoot += 1
+        return
+      }
+      runtimeCounts.darkenMiss += 1
+      recordDiagnosticError('chat-darkening', new Error('page class missing and app render result is not an object'))
     })
   }
 
   patchMedia () {
     const OBSCURE_REASON = 'explicit_content'
 
-    Patcher.before(...Attachment, (self, [props]) => {
+    patchBefore('NSFW attachment blurring', Attachment, (self, [props]) => {
       const { channel } = React.useContext(PreviewContext)
       if (settings.behaviour.nsfw === 'obscure' && channel?.nsfw)
         props.getObscureReason = () => OBSCURE_REASON
     })
 
-    Embed.contextType = PreviewContext
-    Patcher.before(Embed.prototype, 'render', ({ props, context }) => {
+    patchBefore('NSFW embed blurring', [Embed?.prototype, 'render'], ({ props, context }) => {
       if (settings.behaviour.nsfw === 'obscure' && context.channel?.nsfw && props.embed.image)
         props.obscureReason = OBSCURE_REASON
     })
+    if (isValidPatchTarget([Embed?.prototype, 'render'])) Embed.contextType = PreviewContext
   }
 
   attachKeyboardEvents () {
+    this.clearKeyboardEvents()
     this.keyboardEvents = {
       onKeyDown: e => Dispatcher.dispatch({ type: 'CP__KEY_DOWN', event: e }),
       onKeyUp: e => Dispatcher.dispatch({ type: 'CP__KEY_UP', event: e })
@@ -623,11 +1142,27 @@ module.exports = class ChannelsPreview {
   }
 
   clearKeyboardEvents () {
+    if (!this.keyboardEvents) return
     removeEventListener('keydown', this.keyboardEvents.onKeyDown)
     removeEventListener('keyup', this.keyboardEvents.onKeyUp)
+    this.keyboardEvents = null
   }
 
   injectCSS () {
+    // Discord's divider class restyles the cut marker. The marker's own
+    // .CP__divider-cut rules do not need that module.
+    const dividerClass = Selectors.MessageDividers?.divider
+    const dividerRule = typeof dividerClass === 'string' && /^[A-Za-z0-9_-]+$/.test(dividerClass)
+      ? `
+        .CP__divider-cut.${dividerClass},
+        .CP__divider-cut .${dividerClass} {
+            border-style: dashed;
+        }`
+      : ''
+    if (!dividerRule) {
+      console.warn('[ChannelsPreview] Message divider class is missing; dashed cut-divider styling omitted.')
+    }
+
     //language=CSS
     DOM.addStyle(`${config.info.name}-style`, `
         .CP__popout {
@@ -675,11 +1210,7 @@ module.exports = class ChannelsPreview {
 
         .CP__divider-cut {
             margin-top: 40px !important;
-        }
-        .CP__divider-cut.${Selectors.MessageDividers.divider},
-        .CP__divider-cut .${Selectors.MessageDividers.divider} {
-            border-style: dashed;
-        }
+        }${dividerRule}
         .CP__divider-cut span {
             font-weight: 400;
         }
@@ -722,10 +1253,11 @@ module.exports = class ChannelsPreview {
   }
 
   stop () {
+    this.started = false
     this.clearCSS()
     Patcher.unpatchAll()
     this.clearKeyboardEvents()
-    delete Embed.contextType
+    if (Embed) delete Embed.contextType
 
     forceAppUpdate()
   }
@@ -801,13 +1333,13 @@ module.exports = class ChannelsPreview {
         forceUpdate()
       }, [])
 
-      return React.createElement(Stack, {
+      return React.createElement(SettingsStack, {
         id: plugin.getSettingsPanelId(),
         gap: 32,
         children: [
           React.createElement(FieldSet, {
             label: 'Trigger',
-            children: React.createElement(Stack, {
+            children: React.createElement(SettingsStack, {
               gap: 16,
               children: [
                 React.createElement(RadioGroup, {
@@ -846,7 +1378,7 @@ module.exports = class ChannelsPreview {
           React.createElement(Divider),
           React.createElement(FieldSet, {
             label: 'Behavior',
-            children: React.createElement(Stack, {
+            children: React.createElement(SettingsStack, {
               gap: 16,
               children: [
                 React.createElement(Slider, {
@@ -863,7 +1395,7 @@ module.exports = class ChannelsPreview {
                   markers: [...Array(10).keys()].map(n => (n + 1) * 10),
                   stickToMarkers: true
                 }),
-                React.createElement(Switch, {
+                React.createElement(NativeSwitch, {
                   label: 'Show typing users',
                   description: 'Shows who\'s typing in the previewed channel.',
                   checked: plugin.settings.appearance.typingUsers,
@@ -923,7 +1455,7 @@ module.exports = class ChannelsPreview {
           React.createElement(Divider),
           React.createElement(FieldSet, {
             label: 'Appearance',
-            children: React.createElement(Stack, {
+            children: React.createElement(SettingsStack, {
               gap: 16,
               children: [
                 React.createElement(Slider, {
@@ -955,7 +1487,7 @@ module.exports = class ChannelsPreview {
                 }),
                 React.createElement(Field, {
                   label: 'Space between Message Groups',
-                  children: React.createElement(Stack, {
+                  children: React.createElement(SettingsStack, {
                     children: [
                       React.createElement(Checkbox, {
                         value: plugin.settings.appearance.groupSpacingSync,
@@ -984,7 +1516,7 @@ module.exports = class ChannelsPreview {
                   })
                 }),
                 React.createElement(Divider),
-                React.createElement(Switch, {
+                React.createElement(NativeSwitch, {
                   label: 'Backdrop',
                   description: 'Darken the chat behind the preview for better contrast.',
                   checked: plugin.settings.appearance.darkenChat,
@@ -1008,7 +1540,15 @@ module.exports = class ChannelsPreview {
                     stickToMarkers: true,
                     onMarkerRender: m => (m * 100) + '%'
                   })
-                )
+                ),
+                React.createElement('button', {
+                  type: 'button',
+                  onClick: forceUpdate
+                }, 'Refresh'),
+                React.createElement('pre', {
+                  id: 'ChannelsPreview-diagnostic-text',
+                  style: { whiteSpace: 'pre-wrap' }
+                }, buildDiagnosticReport())
               ]
             })
           })
@@ -1016,6 +1556,8 @@ module.exports = class ChannelsPreview {
       })
     }
 
-    return React.createElement(SettingsPanel)
+    return React.createElement(SettingsPanelBoundary, {
+      children: React.createElement(SettingsPanel)
+    })
   }
 }
